@@ -36,8 +36,12 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'bootstrap', '~> 4.1.3'
 
+gem "omniauth"
+gem "omniauth-github"
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'dotenv-rails'
   gem 'byebug', platform: :mri
 
   # Improve the error message you get in the browser
