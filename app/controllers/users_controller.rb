@@ -14,7 +14,12 @@ class UsersController < ApplicationController
     if user 
       flash[:result_text] = "Logged in as returning user #{user.username}"
     else
-      if user
+      user = User.create_user_from_github(auth_hash)
+      if user.save 
+        flash[:result_text] = "Logged in as new user #{user.username}"
+      else
+        
+      end 
       
     end 
 
