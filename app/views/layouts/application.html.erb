@@ -38,7 +38,7 @@
           <%= link_to "Logged in as #{session[:username]}", user_path(id: session[:user_id]), class: 'btn btn-primary' %> 
           </li>
           <li class="navbar-text">
-            <%= link_to 'Logout', logout_path, method: "delete", class: 'btn btn-primary' %>
+            <%= link_to 'Logout', logout_path, method: "post", class: 'btn btn-primary' %>
           <li/>
         <% else %>
           <li class="navbar-text">
