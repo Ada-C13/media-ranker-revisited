@@ -33,7 +33,6 @@ class UsersController < ApplicationController
   end
   
   def destroy
-    #TODO: if there is no current user, what should we do?
     session[:user_id] = nil
     session[:username] = nil
     flash[:success] = "Successfully logged out!"

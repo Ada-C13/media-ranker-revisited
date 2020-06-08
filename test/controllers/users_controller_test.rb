@@ -32,8 +32,10 @@ describe UsersController do
     must_redirect_to root_path
     end
 
-    #TODO: Add test here
-    it 'does something if a not logged in user tries to logout' do
+    it 'redirects to root path if a guest/non-logged in user tries to logout' do
+      post logout_path, params: {}
+
+      must_redirect_to root_path
     end
   end
 
