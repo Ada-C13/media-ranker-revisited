@@ -8,6 +8,11 @@ class UsersController < ApplicationController
     render_404 unless @user
   end
 
+  def created
+    auth_hash = request.env["omniauth.auth"]
+
+  end
+
   def login_form
   end
 
