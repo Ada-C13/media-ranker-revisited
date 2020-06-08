@@ -18,11 +18,12 @@ class UsersController < ApplicationController
       if user.save 
         flash[:result_text] = "Logged in as new user #{user.username}"
       else
-        
+        flash[:messages] = "Could not log you in"
       end 
-      
     end 
 
+    session[:user_id] = user.id
+    return redirect_to root_path
   end 
 
   
@@ -30,7 +31,9 @@ class UsersController < ApplicationController
     user = User.find_by(id: session[:user_id])
     name = user.username 
     session[:user_id] = nil
-    flash[:status] = "Logged out, bye #{name}! :)"
+    flash[:result_text] = "Logged out, bye #{name}! :)"
+
+    redirect_to root_path
   end 
 
 end
