@@ -30,14 +30,11 @@ describe UsersController do
     post logout_path, params: {}
     expect(session[:user_id]).must_be_nil
     must_redirect_to root_path
-
-    #TODO: add flash notice tests
     end
 
+    #TODO: Add test here
     it 'does something if a not logged in user tries to logout' do
     end
-
-
   end
 
 end
