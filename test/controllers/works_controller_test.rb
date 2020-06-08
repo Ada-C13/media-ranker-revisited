@@ -188,7 +188,7 @@ describe WorksController do
   end
   
   describe "upvote" do
-    it "redirects to the work page if no user is logged in" do
+    it "won't allow a guest/non-logged in user to upvote" do
       work = works(:poodr)
       
       expect {
@@ -198,7 +198,7 @@ describe WorksController do
       must_redirect_to work_path(work.id)
     end
     
-    it "redirects to the work page after the user has logged out" do
+    it "won't allow user to upvote after logging out" do
       perform_login
       post logout_path, params: {}
       
@@ -211,7 +211,7 @@ describe WorksController do
       must_redirect_to work_path(work.id)
     end
     
-    it "succeeds for a logged-in user and a fresh user-vote pair" do
+    it "creates a vote for valid logged in user" do
       user = perform_login
       
       work = works(:poodr)
@@ -224,7 +224,7 @@ describe WorksController do
       must_redirect_to work_path(work.id)
     end
     
-    it "redirects to the work page if the user has already voted for that work" do
+    it "does not allow a new vote for previously voted on work" do
       user = perform_login
       
       work = works(:another_album)
