@@ -49,4 +49,25 @@ class UsersController < ApplicationController
 
     redirect_to root_path
   end
+
+  def current
+    @user = User.find_by(id: session[:user_id])
+    if @user.nil?
+      # I have to be logged in!
+      flash[:error] = "You must be logged in to view this page"
+      redirect_to root_path
+      return
+    end
+  end
+
+  def show
+    user_id = params[:id].to_i
+    # It needs to handle this exception.
+    @user = User.find_by(id: user_id)
+
+    if @user.nil?
+      head :not_found
+      return
+    end
+  end
 end
