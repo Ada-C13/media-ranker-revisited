@@ -3,8 +3,9 @@ Rails.application.routes.draw do
   root "works#root"
 
   get "/auth/github", as: "github_login"
-  get "/auth/:provider/callback", to: "users#create"
+  get "/auth/:provider/callback", to: "users#create", as: "omniauth_calback"
   delete "/logout", to: "users#destroy", as: "logout"
+  get "/users/current", to: "users#current", as: "current_user"
 
   resources :works
   post "/works/:id/upvote", to: "works#upvote", as: "upvote"
