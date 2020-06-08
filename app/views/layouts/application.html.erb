@@ -35,7 +35,7 @@
       <ul class="nav app-header__user-nav-container">
         <% if session[:user_id] %>
           <li class="navbar-text">
-          <%= link_to "Logged in as #{session[:username]}", current_user_path(id: session[:user_id]), class: 'btn btn-primary' %> 
+          <%= link_to "Logged in as #{session[:username]}", user_path(id: session[:user_id]), class: 'btn btn-primary' %> 
           </li>
           <li class="navbar-text">
             <%= link_to 'Logout', logout_path, method: "delete", class: 'btn btn-primary' %>
