@@ -1,9 +1,21 @@
 class UsersController < ApplicationController
 
-  def create 
+
+  def create
     auth_hash = request.env["omniauth.auth"]
-    binding.pry
-  end 
+    user = User.find_by(uid: auth_hash[:uid], provider: params[:provider])
+    if user
+      # User was found in the database
+      flash[:success] = "Logged in as returning user #{user.username}"
+    else
+      # User doesn't match anything in the DB
+      # TODO: Attempt to create a new user
+    end
+
+    session[:user_id] = user.id
+    redirect_to root_path
+  end
+
 
   def index
     @users = User.all
