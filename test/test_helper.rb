@@ -44,7 +44,7 @@ class ActiveSupport::TestCase
     user ||= User.first
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
 
-    get omniAuth_callback_path(:github)
+    get omniauth_callback_path(:github)
 
     user = User.find_by(uid: user.uid, username: user.username)
     expect(user).wont_be_nil
