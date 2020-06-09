@@ -5,10 +5,12 @@ describe UsersController do
     it 'can log in an existing user' do
       user = perform_login(users(:ada))
 
+      expect(flash[:status]).must_equal :success
+      expect(flash[:result_text]).must_equal "Existing user #{users(:ada).username} is logged in"
       must_respond_with :redirect
     end
 
-    it 'can log in a new user' do
+    it 'can log in a new user and create a new account for new user' do
       new_user = User.new(
         uid: '18879545',
         username: 'HarryPotter',
@@ -20,8 +22,10 @@ describe UsersController do
         expect {
           logged_in_user = perform_login(new_user)
         }.must_change "User.count", 1
-
+        
         must_respond_with :redirect
+        session[:user_id].must_equal User.last.id
+        expect(flash[:status]).must_equal :success
         expect(flash[:result_text]).must_equal "Logged in as new user #{(new_user).username}"
     end
   end
