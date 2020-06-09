@@ -49,7 +49,6 @@ describe UsersController do
       _(session[:user_id]).must_equal nil
       _(User.count).must_equal start_count
     end
-
   end
 
 end
