@@ -1,4 +1,8 @@
 class UsersController < ApplicationController
+
+  # skip_before_action :require_login, except: [:current_user]
+  skip_before_action :require_login, only: [:new, :create, :destroy]
+
   def index
     @users = User.all
   end
@@ -55,7 +59,7 @@ class UsersController < ApplicationController
     if @user.nil?
       # I have to be logged in!
       flash[:error] = "You must be logged in to view this page"
-      redirect_to root_path
+      redirect_to current_user_path
       return
     end
   end
