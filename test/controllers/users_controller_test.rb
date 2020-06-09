@@ -4,7 +4,7 @@ describe UsersController do
   describe 'auth_callback' do
     it 'logs in an existing user and redirects to the root route' do
       start_count = User.count
-      user = users(:grace)
+      user = users(:dan)
 
       perform_login(user)
       must_redirect_to root_path
