@@ -4,8 +4,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    # @user = User.find_by(id: params[:id])
-    @user = User.find_by(uid: auth_hash[:uid], provider: "github")
+    @user = User.find_by(id: params[:id])
     render_404 unless @user
   end
 
