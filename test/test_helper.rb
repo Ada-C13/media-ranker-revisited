@@ -47,6 +47,13 @@ class ActiveSupport::TestCase
     get auth_callback_path(:github)
   
     return user
-
   end 
+
+  # def mock_logout(user = nil)
+  #   current_user ||= User.find_by(id: session[:user_id])
+
+
+
+
+  # end 
 end

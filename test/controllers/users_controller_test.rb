@@ -34,7 +34,15 @@ describe UsersController do
       mock_login(user)
       user.errors.nil?.must_equal false
       must_redirect_to root_path
+    end 
 
+    it "will log out a user" do 
+      user = users(:grace)
+      mock_login(user)
+
+      delete logout_path
+
+      (session[:user_id].nil?).must_equal true 
 
     end 
   end 
