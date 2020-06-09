@@ -9,3 +9,8 @@ grace:
   uid: 1234
   email: grace@adadev.org
   username: grace
+dan: 
+  provider: github
+  uid: 1244
+  email: dan@adadev.org
+  username: dan

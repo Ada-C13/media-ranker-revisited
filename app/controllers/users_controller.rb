@@ -10,7 +10,6 @@ class UsersController < ApplicationController
 
   def create 
     auth_hash = request.env["omniauth.auth"]
-    puts auth_hash["info"]
     user = User.find_by(uid: auth_hash[:uid], provider: "github")
 
     if user 
@@ -21,9 +20,6 @@ class UsersController < ApplicationController
       if user.save 
         flash[:result_text] = "Welcome, #{user.username}"
       else
-          user.errors.messages.each do |msg|
-          puts msg
-         end 
         flash[:messages] = "Could not create new user account: #{user.errors.messages}"
         return redirect_to root_path
       end 

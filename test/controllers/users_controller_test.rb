@@ -18,21 +18,24 @@ describe UsersController do
     it "create new user" do 
       init_count =  User.count 
 
-
       user = User.new(provider: "github", uid: 934, username: "test", email: "q@gmail.com")
-
-      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
-
-      get auth_callback_path(:github)
-    
-    
+      mock_login(user)
 
       must_redirect_to root_path
-   
-    
-      #User.count.must_equal init_count + 1
+      User.count.must_equal init_count + 1
 
       session[:user_id].must_equal User.last.id
+    end 
+
+    it "will redirect if a user can't be logged in" do 
+
+      user = User.new(provider: "github", uid: 934, email: "q@gmail.com")
+
+      mock_login(user)
+      user.errors.nil?.must_equal false
+      must_redirect_to root_path
+
+
     end 
   end 
 
