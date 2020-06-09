@@ -2,11 +2,10 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root "works#root"
 
-  delete "/logout", to: "users#destroy", as: "logout"
-
-
   get "/auth/github", as: "github_login"
-  get "/auth/:provider/callback", to: "users#create"
+  get "/auth/:provider/callback", to: "users#create", as: 'auth_callback'
+
+  delete "/logout", to: "users#destroy", as: "logout"
 
 
   resources :works
