@@ -26,6 +26,14 @@ describe UsersController do
     end
 
     it "redirects to the login route if given invalid user data" do
+      start_count = User.count
+      user = User.new(provider: "", uid: "", username: "", email: "")
+
+      perform_login(user)
+
+      must_redirect_to root_path
+      _(session[:user_id]).must_equal nil
+      _(User.count).must_equal start_count
     end
   end
 
