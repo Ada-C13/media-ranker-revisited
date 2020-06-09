@@ -37,4 +37,19 @@ describe UsersController do
     end
   end
 
+  describe "logout" do
+    it "logs out the user and redirects to root path" do
+      start_count = User.count
+      user = users(:dan)
+      perform_login(user)
+
+      post logout_path
+
+      must_redirect_to root_path
+      _(session[:user_id]).must_equal nil
+      _(User.count).must_equal start_count
+    end
+
+  end
+
 end
