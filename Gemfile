@@ -46,6 +46,7 @@ group :development, :test do
 
   # Use pry for rails console
   gem 'pry-rails'
+  gem 'dotenv-rails'
 end
 
 group :test do
