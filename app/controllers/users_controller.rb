@@ -4,7 +4,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find_by(id: params[:id])
+    # @user = User.find_by(id: params[:id])
+    @user = User.find_by(uid: auth_hash[:uid], provider: "github")
     render_404 unless @user
   end
 
@@ -67,5 +68,5 @@ class UsersController < ApplicationController
     flash[:success] = "Successfully logged out!"
     redirect_to root_path
   end
-  
+
 end
