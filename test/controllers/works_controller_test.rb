@@ -1,7 +1,9 @@
 require "test_helper"
 
 describe WorksController do
-  let(:existing_work) { works(:album) }
+  let(:existing_work) { 
+    works(:album) 
+  }
 
   describe "root" do
     it "succeeds with all media types" do
@@ -95,9 +97,10 @@ describe WorksController do
     end
   end
 
+  # TODO (there is an error)
   describe "show" do
     it "succeeds for an extant work ID" do
-      get work_path(existing_work.id)
+      get work_path(existing_work)
 
       must_respond_with :success
     end
@@ -188,20 +191,75 @@ describe WorksController do
   end
 
   describe "upvote" do
+    let(:work_params) {
+      works(:parasite)
+    }
+
     it "redirects to the work page if no user is logged in" do
-      skip
+      expect {
+        post upvote_path(work_params)
+      }.wont_change "Vote.count"
+
+      expect(flash["status"]).must_equal :failure 
+      expect(flash["result_text"]).must_include "You must log in to do that"
+
+      must_redirect_to work_path(work_params)
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+      current_user = users(:lovelace)
+
+      perform_login(current_user)
+
+      expect(session[:user_id]).wont_be_nil
+
+      delete logout_path
+
+      expect(session[:user_id]).must_be_nil
+
+      expect {
+        post upvote_path(work_params)
+      }.wont_change "Vote.count"
+
+      expect(flash["status"]).must_equal :failure 
+      expect(flash["result_text"]).must_include "You must log in to do that"
+
+      must_redirect_to work_path(work_params)
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      current_user = users(:lovelace)
+
+      perform_login(current_user)
+
+      expect(session[:user_id]).wont_be_nil
+
+      expect {
+        post upvote_path(work_params)
+      }.must_change "Vote.count", 1
+      
+      expect(flash["status"]).must_equal :success
+      expect(flash["result_text"]).must_include "Successfully upvoted!"
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      current_user = users(:lovelace)
+
+      perform_login(current_user)
+
+      expect(session[:user_id]).wont_be_nil
+      post upvote_path(work_params)
+
+      expect {
+        post upvote_path(work_params)
+      }.wont_change "Vote.count"
+
+      must_redirect_to work_path(work_params)
+
+      expect(flash["status"]).must_equal :failure
+      expect(flash["result_text"]).must_include "Could not upvote"
+      expect(flash["messages"][:user]).must_include "has already voted for this work"
+      
     end
   end
 end
