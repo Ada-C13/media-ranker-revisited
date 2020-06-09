@@ -3,10 +3,8 @@ Rails.application.routes.draw do
   
   get "/auth/github", as: "github_login"
   get "/auth/:provider/callback", to: "users#create"
-  
+
   root "works#root"
-  get "/login", to: "users#login_form", as: "login"
-  post "/login", to: "users#login"
   post "/logout", to: "users#logout", as: "logout"
 
   resources :works
