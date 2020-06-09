@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   post "/login", to: "users#login"
   post "/logout", to: "users#logout", as: "logout"
 
+  get "/auth/github", as: "github_login"
+
   resources :works
   post "/works/:id/upvote", to: "works#upvote", as: "upvote"
 
