@@ -24,3 +24,9 @@ poodr:
 movie:
   title: test movie - has only required fields
   category: movie
+parasite:
+  category: movie
+  title: Parasite
+  creator: Bong Joon-ho
+  description: This starts out almost like an 'Ocean's Eleven' heist film and then expands into a comedy, mystery, thriller, drama, romance, crime and even horror film. 
+  publication_year: 2019
