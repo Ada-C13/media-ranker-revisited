@@ -14,13 +14,16 @@ class UsersController < ApplicationController
     user = User.find_by(uid: auth_hash[:uid],
                         provider: params[:provider])
     if user 
+      flash[:status] = :success
       flash[:result_text] = "Existing user #{user.username} is logged in."
 
     else
-      user = User.build_from_github
+      user = User.build_from_github(auth_hash)
       if user.save 
+        flash[:status] = :success
         flash[:result_text] = "Logged in as new user #{user.username}"
       else
+        flash.now[:status] = :failure
         flash[:result_text] = "Could not create new user account: #{user.errors.messages}"
         return redirect_to root_path 
       end
