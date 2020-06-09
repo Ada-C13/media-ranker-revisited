@@ -10,16 +10,26 @@ class UsersController < ApplicationController
 
   def create
     auth_hash = request.env["omniauth.auth"]
-    # user = User.find_by(uid: auth_hash[:uid], provider: "github")
-    # if user
-    #   # User was found in the database
-    #   flash[:success] = "Logged in as returning user #{user.username}"
-    # else
-    #   # User doesn't match anything in the DB
-    #   # TODO: Attempt to create a new user
-    # end
- 
-    # session[:user_id] = user.id
+    user = User.find_by(uid: auth_hash[:uid], provider: auth_hash[:provider])
+    if user         # User was found in the database
+      flash[:status] = :success
+      flash[:result_text] = "Logged in as returning user #{user.username}"
+    else
+      # User doesn't match anything in the DB
+      user = User.build_from_github(auth_hash)
+
+      if user.save
+        flash[:status] = :success
+        flash[:result_text] = "Logged in as new user #{user.username}"
+      else
+        flash[:status] = :failure
+        flash[:result_text] = "Could not create new user account: #{user.errors.messages}"
+        redirect_to root_path
+      end
+    end
+    
+    # If we get here, we have a valid user instance
+    session[:user_id] = user.id
     redirect_to root_path
   end
 
