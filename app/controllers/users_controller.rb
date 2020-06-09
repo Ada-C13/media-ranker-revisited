@@ -10,9 +10,9 @@ class UsersController < ApplicationController
   
   def create
     auth_hash = request.env["omniauth.auth"]
-    user = User.find_by(uid: auth_hash[:uid], provider: "github")
+    user = User.find_by(uid: auth_hash[:uid], provider: auth_hash[:provider])
+    
     if user
-      # User was found in the database
       flash[:success] = "Logged in as returning user #{user.username}"
     else
       user = User.build_from_github(auth_hash)
@@ -39,5 +39,5 @@ class UsersController < ApplicationController
     
     redirect_to root_path
   end
-
+  
 end
