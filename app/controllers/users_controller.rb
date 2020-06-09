@@ -18,7 +18,7 @@ class UsersController < ApplicationController
     #   # User doesn't match anything in the DB
     #   # TODO: Attempt to create a new user
     # end
-
+ 
     # session[:user_id] = user.id
     redirect_to root_path
   end
