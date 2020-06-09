@@ -11,7 +11,7 @@ class UsersController < ApplicationController
 
   def create
     auth_hash = request.env["omniauth.auth"]
-
+    
     user = User.find_by(uid: auth_hash[:uid], provider: "github")
     if user
       flash[:status] = :success
@@ -36,7 +36,7 @@ class UsersController < ApplicationController
     return
   end
 
-  def logout
+  def destroy
     session[:user_id] = nil
     flash[:status] = :success
     flash[:result_text] = "Successfully logged out"
