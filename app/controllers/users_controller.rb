@@ -18,7 +18,7 @@ class UsersController < ApplicationController
       flash[:result_text] = "Successfully logged in as existing user #{user.username}"
     else
       user = User.build_from_github(auth_hash)
-      
+
       if user.save
         flash[:status] = :success
         flash[:result_text] = "Successfully created new user #{user.username} with ID #{user.id}"
@@ -26,7 +26,7 @@ class UsersController < ApplicationController
         flash.now[:status] = :failure
         flash.now[:result_text] = "Could not log in"
         flash.now[:messages] = user.errors.messages
-        render "login_form", status: :bad_request
+        redirect_to root_path
         return
       end
     end
