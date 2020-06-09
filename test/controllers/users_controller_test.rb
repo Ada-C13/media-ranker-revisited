@@ -22,6 +22,7 @@ describe UsersController do
         }.must_change "User.count", 1
 
         must_respond_with :redirect
+        expect(flash[:result_text]).must_equal "Logged in as new user #{(new_user).username}"
     end
   end
 
@@ -32,6 +33,7 @@ describe UsersController do
       get user_path(users(:ada).id)
 
       must_respond_with :success
+      expect(flash[:result_text]).must_equal "Existing user #{users(:ada).username} is logged in"
     end
   end
 
@@ -49,6 +51,8 @@ describe UsersController do
     end
 
     it "guest users won't be able to log out without logged in " do
+      # expect(session[:user_id]).must_be_nil
+
       post logout_path
       
       expect(flash[:status]).must_equal :failure
