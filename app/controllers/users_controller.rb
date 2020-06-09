@@ -8,6 +8,28 @@ class UsersController < ApplicationController
     render_404 unless @user
   end
 
+  def create 
+    auth_hash = request.env["omniauth.auth"] 
+
+    user = User.find_by(uid: auth_hash[:uid],
+                        provider: params[:provider])
+    if user 
+      flash[:result_text] = "Existing user #{user.username} is logged in."
+
+    else
+      user = User.build_from_github
+      if user.save 
+        flash[:result_text] = "Logged in as new user #{user.username}"
+      else
+        flash[:result_text] = "Could not create new user account: #{user.errors.messages}"
+        return redirect_to root_path 
+      end
+    end
+
+    session[:user_id] = user.id 
+    redirect_to root_path
+  end
+
   def login_form
   end
 
