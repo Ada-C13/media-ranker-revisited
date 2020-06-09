@@ -26,6 +26,34 @@ class ActiveSupport::TestCase
 
   def setup
     OmniAuth.config.test_mode = true
-
   end 
+
+  def mock_auth_hash(user)
+    return {
+      provider: user.provider,
+      uid: user.uid,
+      info: {
+        email: user.email,
+        username: user.username
+      }
+    }
+  end 
+
+
+  def mock_login(user = nil) 
+    user ||= User.first
+
+    OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+    get auth_callback_path(:github)
+  
+    return user
+  end 
+
+  # def mock_logout(user = nil)
+  #   current_user ||= User.find_by(id: session[:user_id])
+
+
+
+
+  # end 
 end

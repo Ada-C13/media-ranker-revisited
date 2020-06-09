@@ -1,11 +1,16 @@
-ada:
+quin:
   provider: github
-  uid: 12345
-  email: ada@adadevelopersacademy.org
-  name: countess_ada
+  uid: 6789
+  email: quin@gmail.com
+  username: random
 
 grace:
   provider: github
-  uid: 13371337
-  email: grace@hooper.net
-  name: graceful_hopps
+  uid: 1234
+  email: grace@adadev.org
+  username: grace
+dan: 
+  provider: github
+  uid: 1244
+  email: dan@adadev.org
+  username: dan
