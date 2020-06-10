@@ -1,3 +1,4 @@
+
 class Work < ApplicationRecord
   CATEGORIES = %w(album book movie)
   has_many :votes, dependent: :destroy

@@ -2,6 +2,14 @@
 
 dan:
   username: dan
+  provider: github
+  uid: 123
+  email: dan@ada.com
+  avatar: https://avatars0.githubusercontent.com/u/54689464?v=4
 
 kari:
   username: kari
+  provider: github
+  uid: 111
+  email: kari@ada.com
+  avatar: https://avatars0.githubusercontent.com/u/54689464?v=4
