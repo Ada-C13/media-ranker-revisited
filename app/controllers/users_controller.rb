@@ -17,13 +17,17 @@ class UsersController < ApplicationController
     user = User.find_by(uid: auth_hash["uid"], provider: params[:provider])
 
     if user # existing user
-      flash[:notice] = "Welcome back, #{user.username}!"
+      flash[:status] = :success
+      flash[:result_text] = "Welcome back, #{user.username}!"
     else # new user (will have to create the user record)
       user = User.build_from_github(auth_hash)
       if user.save
-        flash[:notice] = "Welcome, #{user.username}!"
+        flash[:status] = :success
+        flash[:result_text] = "Welcome, #{user.username}!"
       else
-        flash[:alert] = "Couldn't create a user account #{user.errors.messages}"
+        flash[:status] = :failure
+        flash[:result_text] = "Couldn't create a user account"
+        flash[:messages] = user.errors.messages
         return redirect_to root_path
       end
     end
@@ -53,7 +57,7 @@ class UsersController < ApplicationController
 
   def logout
     session[:user_id] = nil
-    flash[:notice] = "Successfully logged out"
+    flash[:result_text] = "Successfully logged out"
     redirect_to root_path
   end
 end
