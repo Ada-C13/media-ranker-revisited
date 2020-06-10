@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_login
-    if @login_user.nil?
+    if find_user().nil?
         flash[:error] = "You must log in to do that"
       redirect_to root_path
     end
