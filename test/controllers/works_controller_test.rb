@@ -261,14 +261,15 @@ describe WorksController do
 
   describe "authentication" do 
     it "will allow logged in user to view index" do 
-
+      mock_login(user)
+      get works_path
+      must_respond_with :ok
     end 
 
 
     it "will redirect guest to main page" do 
-     get works_path 
-     must_redirect_to root_path
-
+      get works_path 
+      must_redirect_to root_path
     end 
 
 
