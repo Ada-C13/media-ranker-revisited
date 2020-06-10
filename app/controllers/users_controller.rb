@@ -21,12 +21,13 @@ class UsersController < ApplicationController
         flash[:result_text] = "Welcome, #{user.username}"
       else
         flash[:messages] = "Could not create new user account: #{user.errors.messages}"
-        return redirect_to root_path
-      end 
+        redirect_to root_path
+      end
+
     end 
 
     session[:user_id] = user.id
-    return redirect_to root_path
+    redirect_to root_path
   end 
 
   

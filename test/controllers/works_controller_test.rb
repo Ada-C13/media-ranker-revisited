@@ -107,7 +107,6 @@ describe WorksController do
 
   describe "show" do
     it "succeeds for an extant work ID" do
-      user = users(:grace)
       mock_login(user)
       get work_path(existing_work.id)
 
@@ -230,21 +229,21 @@ describe WorksController do
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-     
-     
+      work = Work.last
+      vote_count = work.votes.length
+      user = users(:grace)
       mock_login(user)
-      work = Work.first
-      vote_count = work.votes.length 
+      
+
       post upvote_path(work.id)
       work.reload 
 
-      (Work.first.votes.length).must_equal vote_count + 1
+      (Work.last.votes.length).must_equal vote_count + 1
       must_redirect_to work_path(work.id)
 
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      user = users(:quin)
       mock_login(user)
       work = Work.first
      

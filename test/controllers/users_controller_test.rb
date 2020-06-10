@@ -30,9 +30,9 @@ describe UsersController do
     it "will redirect if a user can't be logged in" do 
 
       user = User.new(provider: "github", uid: 934, email: "q@gmail.com")
-
       mock_login(user)
       user.errors.nil?.must_equal false
+      
       must_redirect_to root_path
     end 
 
