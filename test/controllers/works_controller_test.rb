@@ -189,19 +189,49 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
-    end
+      work = Work.first
+      vote_count = work.votes.length 
+      post upvote_path(work.id)
+      (work.votes.length).must_equal vote_count
+      must_redirect_to work_path(work.id)
+    end 
 
-    it "redirects to the work page after the user has logged out" do
-      skip
+    it "redirects to the root page after the user has logged out" do
+      work = Work.first
+      user = users(:quin)
+      mock_login(user)
+   
+      delete logout_path
+      must_redirect_to root_path
+
+      expect(session[:user_id]).must_equal nil
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      user = users(:quin)
+      mock_login(user)
+      work = Work.first
+      vote_count = work.votes.length 
+      post upvote_path(work.id)
+      work.reload 
+
+      (Work.first.votes.length).must_equal vote_count + 1
+      must_redirect_to work_path(work.id)
+
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      user = users(:quin)
+      mock_login(user)
+      work = Work.first
+     
+      post upvote_path(work.id)
+      vote_count = work.votes.length 
+      work.reload 
+     
+
+      (Work.first.votes.length).must_equal vote_count
+      must_redirect_to work_path(work.id)
     end
   end
 end
