@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
     raise ActionController::RoutingError.new("Not Found")
   end
 
+  def create
+  end
   private
 
   def find_user
