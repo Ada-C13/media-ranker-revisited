@@ -189,19 +189,49 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
+      post upvote_path(existing_work.id)
+
+      must_respond_with :redirect
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+
+      #TODO ask how they want this test interperted?
+
+      user = perform_login()
+      expect(user.username).must_equal "dan"
+
+      post logout_path
+
+      post upvote_path(existing_work.id)
+
+      must_respond_with :redirect
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      user = perform_login()
+      expect(user.username).must_equal "dan"
+
+      post upvote_path(existing_work.id)
+
+      must_respond_with :redirect
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      #TODO ask how they want this test interperted? Are we supposed to alter the upvote action to say if the new vote already exists flash: you already voted and redirect?
+      user = perform_login()
+      expect(user.username).must_equal "dan"
+
+      post upvote_path(existing_work.id)
+      must_respond_with :redirect
+      must_redirect_to work_path(existing_work.id)
+
+      post upvote_path(existing_work.id)
+      must_respond_with :redirect
+      must_redirect_to work_path(existing_work.id)
     end
   end
 end

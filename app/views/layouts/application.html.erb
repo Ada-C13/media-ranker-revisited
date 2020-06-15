@@ -35,9 +35,9 @@
       <ul class="nav app-header__user-nav-container">
         <% if @login_user %>
 
-        <li class="nav-item app-header__nav_item">
+        <%# <li class="nav-item app-header__nav_item">
           <%= link_to "Logged in as #{@login_user.username}", user_path(@login_user), class: "btn btn-primary" %>
-        </li>
+        <%#</li> %>
         <li class="nav-item app-header__nav_item">
           <%= link_to "Log Out", logout_path, method: :post, class: "btn btn-primary" %>
         </li>

@@ -10,28 +10,15 @@ class UsersController < ApplicationController
 
   def create
     auth_hash = request.env["omniauth.auth"]
-    p "1111111111111#{auth_hash}"
     user = User.find_by(uid: auth_hash[:uid], provider: "github")
     if user
-      p "222222222222222#{user}"
-      # User was found in the database
-      flash[:success] = "Logged in as returning user #{user.username}"
+      flash[:success] = "Logged in as returning user #{user.username}"  #TODO why does this not show? is this the Success CSS somewhere?
     else
-      # User doesn't match anything in the DB
-      # Attempt to create a new user
       user = User.build_from_github(auth_hash)
-      p "3333333333333333#{user}"
       if user.save
         flash[:success] = "Logged in as new user #{user.username}"
-        p "44444444444444444#{user}"
       else
-        # Couldn't save the user for some reason. If we
-        # hit this it probably means there's a bug with the
-        # way we've configured GitHub. Our strategy will
-        # be to display error messages to make future
-        # debugging easier.
         flash[:error] = "Could not create new user account: #{user.errors.messages}"
-        p "555555555555555#{user.errors.messages}"
         return redirect_to root_path
       end
     end
@@ -66,10 +53,10 @@ class UsersController < ApplicationController
 #     redirect_to root_path
 #   end
 
-#   def logout
-#     session[:user_id] = nil
-#     flash[:status] = :success
-#     flash[:result_text] = "Successfully logged out"
-#     redirect_to root_path
-#   end
+  def logout
+    session[:user_id] = nil
+    flash[:status] = :success
+    flash[:result_text] = "Successfully logged out"
+    redirect_to root_path
+  end
 end
