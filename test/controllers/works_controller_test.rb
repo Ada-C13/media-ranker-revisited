@@ -11,6 +11,42 @@ describe WorksController do
       perform_login(users(:grace))
     end
 
+
+    describe "index" do
+      it "succeeds when there are works" do
+        get works_path
+
+        must_respond_with :success
+      end
+
+      it "succeeds when there are no works" do
+        Work.all do |work|
+          work.destroy
+        end
+
+        get works_path
+
+        must_respond_with :success
+      end
+    end
+
+    describe "show" do
+      it "succeeds for an extant work ID" do
+        get work_path(existing_work.id)
+
+        must_respond_with :success
+      end
+
+      it "renders 404 not_found for a bogus work ID" do
+        destroyed_id = existing_work.id
+        existing_work.destroy
+
+        get work_path(destroyed_id)
+
+        must_respond_with :not_found
+      end
+    end
+
     describe "new" do
       it "succeeds" do
         get new_work_path
@@ -131,41 +167,6 @@ describe WorksController do
     end
 
 
-    describe "index" do
-      it "succeeds when there are works" do
-        get works_path
-
-        must_respond_with :success
-      end
-
-      it "succeeds when there are no works" do
-        Work.all do |work|
-          work.destroy
-        end
-
-        get works_path
-
-        must_respond_with :success
-      end
-    end
-
-    describe "show" do
-      it "succeeds for an extant work ID" do
-        get work_path(existing_work.id)
-
-        must_respond_with :success
-      end
-
-      it "renders 404 not_found for a bogus work ID" do
-        destroyed_id = existing_work.id
-        existing_work.destroy
-
-        get work_path(destroyed_id)
-
-        must_respond_with :not_found
-      end
-    end
-
     describe "upvote" do
       it "redirects to the root page after the user has logged out" do
         perform_logout
@@ -220,7 +221,73 @@ describe WorksController do
       end
     end
 
+    describe "index" do
+      it "does not succeed and redirects to main page" do
+        get works_path
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
 
+    describe "show" do
+      it "does not succeed and redirects to main page" do
+        get work_path(existing_work.id)
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
+
+    describe "new" do
+      it "does not succeed and redirects to main page" do
+        get new_work_path
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
+
+    describe "create" do
+      it "does not creates a work and redirects to main page" do
+        new_work = { work: { title: "Dirty Computer", category: "album" } }
+
+        expect {
+          post works_path, params: new_work
+        }.wont_change "Work.count"
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
+
+    describe "edit" do
+      it "does not succeeds for an extant work ID and redirects to main page" do
+        get edit_work_path(existing_work.id)
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
+
+    describe "update" do
+      it "does not succeeds for a valid data and an extant work ID and redirects to main page" do
+        updates = { work: { title: "Dirty Computer" } }
+
+        expect {
+          put work_path(existing_work), params: updates
+        }.wont_change "Work.count"
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
+
+
+    describe "destroy" do
+      it "does not succeeds for an extant work ID and redirects to main page" do
+        expect {
+          delete work_path(existing_work.id)
+        }.wont_change "Work.count"
+
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
 
 
     describe "upvote" do
