@@ -39,4 +39,16 @@ describe User do
       expect(user2.errors.messages).must_include :username
     end
   end
+
+  describe "build_from_github" do
+    it "returns a user that has not been logged in before" do
+      new_user = User.new(uid: 11111, username: "someone", email: "hi@yahoo.com", provider: "github")
+      mock_auth_hash = mock_auth_hash(new_user)
+    
+      user = User.build_from_github(mock_auth_hash)
+
+      expect(user.uid).must_equal new_user.uid
+      expect(user.username).must_equal new_user.username
+    end
+  end
 end
