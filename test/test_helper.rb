@@ -49,4 +49,8 @@ class ActiveSupport::TestCase
     return user
   end
 
+  def perform_logout
+    delete logout_path
+  end
+
 end
