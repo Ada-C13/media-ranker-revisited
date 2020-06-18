@@ -3,7 +3,6 @@ require "test_helper"
 describe UsersController do
 
   describe 'login' do
-  
     it 'can login an existing user' do
       user = perform_login(users(:kari))
 
@@ -19,7 +18,6 @@ describe UsersController do
 
       must_respond_with :redirect
     end
-
   end
 
   describe "logout" do

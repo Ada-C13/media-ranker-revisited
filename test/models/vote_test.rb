@@ -16,8 +16,8 @@ describe Vote do
   end
 
   describe "validations" do
-    let (:user1) { User.new(username: "chris") }
-    let (:user2) { User.new(username: "chris") }
+    let (:user1) { User.new(username: "leah", provider: 'github', uid: 1) }
+    let (:user2) { User.new(username: "chris", provider: 'github', uid: 2) }
     let (:work1) { Work.new(category: "book", title: "House of Leaves") }
     let (:work2) { Work.new(category: "book", title: "For Whom the Bell Tolls") }
 
@@ -31,7 +31,7 @@ describe Vote do
     it "allows multiple users to vote for a work" do
       vote1 = Vote.new(user: user1, work: work1)
       vote1.save!
-      vote2 = Vote.new(user: user2, work: work1)
+      vote2 = Vote.new(user: user2, work: work1) 
       expect(vote2.valid?).must_equal true
     end
 
