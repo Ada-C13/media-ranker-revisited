@@ -3,7 +3,6 @@ require "test_helper"
 describe UsersController do
 
   describe 'login' do
-  
     it 'can login an existing user' do
       user = perform_login(users(:kari))
 
@@ -19,7 +18,6 @@ describe UsersController do
 
       must_respond_with :redirect
     end
-
   end
 
   describe "logout" do
@@ -38,5 +36,69 @@ describe UsersController do
       must_redirect_to root_path
     end
   end
+
+  # describe 'logged in user access' do
+    
+
+  #   it 'logged in user can access the homepage (root)' do
+     
+  #   end
+
+  #   it 'logged in user can see all works (index)' do
+   
+  #   end
+
+  #   it 'logged in user can create a new work (create)' do
+
+  #   end
+
+  #   it 'logged in user can see individual work (show)' do
+
+  #   end
+
+  #   it 'logged in user can update existing work (update)' do
+
+  #   end
+
+  #   it 'logged in user can destroy existing work (destroy)' do
+
+  #   end
+
+  #   it 'logged in user can upvote existing work (upvote)' do
+
+  #   end
+    
+  # end
+
+  # describe 'guest user access' do
+
+  #   it 'guest user can access the homepage (root)' do
+
+  #   end
+
+  #   it 'guest user cannot see all works (index)' do
+
+  #   end
+
+  #   it 'guest user cannot create a new work (create)' do
+
+  #   end
+
+  #   it 'guest user cannot see individual work (show)' do
+
+  #   end
+
+  #   it 'guest user cannot update existing work (update)' do
+
+  #   end
+
+  #   it 'guest user cannot destroy existing work (destroy)' do
+
+  #   end
+
+  #   it 'guest user cannot upvote existing work (upvote)' do
+
+  #   end
+  # end
 
 end

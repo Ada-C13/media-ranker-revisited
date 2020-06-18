@@ -31,7 +31,7 @@ describe Vote do
     it "allows multiple users to vote for a work" do
       vote1 = Vote.new(user: user1, work: work1)
       vote1.save!
-      vote2 = Vote.new(user: user2, work: work1)
+      vote2 = Vote.new(user: user2, work: work1) 
       expect(vote2.valid?).must_equal true
     end
 

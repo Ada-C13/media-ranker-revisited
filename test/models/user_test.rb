@@ -69,4 +69,6 @@ describe User do
       expect(user.username).must_equal auth_hash[:info][:nickname]
     end
   end
+
+  
 end

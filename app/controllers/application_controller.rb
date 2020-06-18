@@ -16,5 +16,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  
+  def require_login
+    find_user
+    if find_user.nil?
+      flash[:status] = :failure
+      flash[:result_text] = "Sorry, you need to be logged into do that."
+      redirect_to root_path
+      return
+    end
+  end
 end
