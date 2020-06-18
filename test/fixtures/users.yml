@@ -9,3 +9,9 @@ grace:
   uid: 13371337
   email: grace@hooper.net
   username: graceful_hopps
+
+dan: 
+  provider: github
+  uid: 9999
+  email: dan@hooper.net
+  username: dan

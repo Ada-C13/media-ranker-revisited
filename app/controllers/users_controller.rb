@@ -20,7 +20,7 @@ class UsersController < ApplicationController
       flash[:success] = "Logged in as returning user #{user.username}"
     else  
       user = User.build_from_github(auth_hash)
-      p user 
+   
       if user.save 
         flash[:success] = "Logged in as new user #{user.username}"
       else  
