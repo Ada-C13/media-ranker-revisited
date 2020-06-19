@@ -15,12 +15,18 @@ class UsersController < ApplicationController
     user = User.find_by(uid: auth_hash[:uid], provider: auth_hash[:provider])
 
     if user
-      # User was found in the database
+      
       flash[:success] = "Welcome back, #{user.username}!"
     else
-      # User doesn't match anything in the DB
-      # TODO: Attempt to create a new user
-      flash[:success] = "Welcome to Media Ranker, #{user.username}!"
+      user = self.build_from_github(auth_hash)
+
+      if user.save
+        flash[:success] = "Welcome to Media Ranker, #{user.username}!"
+      else
+        flash[:error] = "User account could not be created: #{user.errors.messages}"
+        redirect_to root_path
+        return
+      end
     end
 
     session[:user_id] = user.id
