@@ -23,19 +23,34 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
   # Add more helper methods to be used by all tests here...
-  before_action :require_login
-  before_action :find_user
-  
-  def current_user
-    return User.find_by(id: session[:user_id]) if session[:user_id]
+
+  def setup
+    OmniAuth.config.test_mode = true
   end
   
-  def require_login
-    if current_user.nil?
-      flash[:error] = "Oops. Looks like you don't have permission to view this page. Please login or create an account."
-      redirect_to root_path
-    end
+  def mock_auth_hash(user)
+    return {
+      provider: user.provider,
+      uid: user.uid,
+      info: {
+        email: user.email,
+        nickname: user.username
+      }
+    }
   end
 
+  def perform_login(user = nil)
+    user ||= User.first
+    
+    OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+
+    get omniauth_callback_path(:github)
+
+    return user
+  end
+
+  def perform_logout
+    delete logout_path
+  end
 
 end
