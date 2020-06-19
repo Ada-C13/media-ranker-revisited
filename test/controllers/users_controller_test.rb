@@ -19,12 +19,12 @@ describe UsersController do
     end
 
     it "can login new user" do 
-      new_user = User.new( uid:9999, username:"oscar", email: "oscar@gmail.org", provider: "github")
-     
+      new_user = User.new( uid:9876, username:"oscar", email: "oscar@gmail.org", provider: "github")
+
       expect {
         login(new_user)
       }.must_change "User.count", 1 
-
+     
       must_respond_with :redirect 
     end 
   end 
