@@ -34,7 +34,13 @@ describe WorksController do
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
 
   describe "index" do
+
+    before do 
+      login(users(:ada))
+    end 
+
     it "succeeds when there are works" do
+
       get works_path
 
       must_respond_with :success
@@ -53,6 +59,8 @@ describe WorksController do
 
   describe "new" do
     it "succeeds" do
+
+      login(users(:ada))
       get new_work_path
 
       must_respond_with :success
@@ -60,6 +68,11 @@ describe WorksController do
   end
 
   describe "create" do
+
+    before do 
+      login(users(:ada))
+    end 
+
     it "creates a work with valid data for a real category" do
       new_work = { work: { title: "Dirty Computer", category: "album" } }
 
@@ -96,8 +109,14 @@ describe WorksController do
   end
 
   describe "show" do
+
+    before do 
+      login(users(:ada))
+    end 
+
     it "succeeds for an extant work ID" do
-      get work_path(existing_work.id)
+
+      get works_path(existing_work.id)
 
       must_respond_with :success
     end
@@ -113,7 +132,12 @@ describe WorksController do
   end
 
   describe "edit" do
+
+    before do 
+      login(users(:ada))
+    end 
     it "succeeds for an extant work ID" do
+     
       get edit_work_path(existing_work.id)
 
       must_respond_with :success
@@ -130,6 +154,10 @@ describe WorksController do
   end
 
   describe "update" do
+    before do 
+      login(users(:ada))
+    end 
+
     it "succeeds for valid data and an extant work ID" do
       updates = { work: { title: "Dirty Computer" } }
 
@@ -166,6 +194,9 @@ describe WorksController do
   end
 
   describe "destroy" do
+    before do 
+      login(users(:ada))
+    end 
     it "succeeds for an extant work ID" do
       expect {
         delete work_path(existing_work.id)
@@ -188,20 +219,71 @@ describe WorksController do
   end
 
   describe "upvote" do
-    it "redirects to the work page if no user is logged in" do
-      skip
+    it "redirects to the root page if no user is logged in" do
+      work = works(:album)
+      expect{
+        post upvote_path(work.id)
+      }.wont_change "Vote.count"
+
+      must_redirect_to root_path
     end
 
-    it "redirects to the work page after the user has logged out" do
-      skip
+    it "redirects to the home page after the user has logged out" do
+      user = users(:ada)
+    
+      login(user)
+      post logout_path
+      must_redirect_to root_path 
+
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      user = users(:ada)
+      work = works(:album)
+
+      login(user)
+
+      expect{
+        post upvote_path(work.id)
+      }.must_differ "Vote.count", 1 
+
+      vote = Vote.find_by(user_id: user.id, work_id: work.id)
+      expect(vote.user.username).must_equal "countess_ada"
+
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+     # dan already voted for another_album
+      user = users(:dan)
+      work = works(:another_album)
+
+      login(user)
+
+      expect{
+        post upvote_path(work.id)
+      }.wont_change "Vote.count"
+
+      must_redirect_to work_path(work.id) 
+ 
     end
   end
+
+  describe "when user is not logged in" do 
+
+    it "cannot get to work index page" do 
+      get works_path
+
+      flash[:result_text].must_include "You must be logged in to view this section"
+      must_redirect_to root_path
+    end 
+
+    it "cannot add a new media" do 
+
+      get new_work_path
+
+      flash[:result_text].must_include "You must be logged in to view this section"
+      must_redirect_to root_path
+    end 
+  end 
+
 end
