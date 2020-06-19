@@ -55,4 +55,16 @@ describe UsersController do
     
   end
 
+  describe "logout" do
+    it "can log out a user" do
+      expect {
+        perform_logout
+      }.wont_change "User.count"
+
+      must_respond_with :redirect
+      must_redirect_to root_path
+      expect(session[:user_id]).must_be_nil
+    end
+  end
+
 end
