@@ -18,7 +18,7 @@ class UsersController < ApplicationController
       
       flash[:success] = "Welcome back, #{user.username}!"
     else
-      user = self.build_from_github(auth_hash)
+      user = User.build_from_github(auth_hash)
 
       if user.save
         flash[:success] = "Welcome to Media Ranker, #{user.username}!"
