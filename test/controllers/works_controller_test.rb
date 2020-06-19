@@ -105,7 +105,7 @@ describe WorksController do
   end
 
   describe "show" do
-    it "succeeds for an extant work ID" do
+    it "succeeds for an extant work ID by a logged in user" do
       perform_login(users(:dan))
       get work_path(existing_work.id)
 
