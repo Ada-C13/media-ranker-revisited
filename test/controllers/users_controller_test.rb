@@ -5,21 +5,20 @@ describe UsersController do
     it "logs in an existing user and redirects to the root route" do
       
       start_count = User.count
-      user = users(:tom)
+      user = users(:dan)
 
       perform_login(user)
       must_redirect_to root_path
-    
+      # binding.pry
       expect(session[:user_id]).must_equal user.id
       
-      # Should *not* have created a new user
       expect(User.count).must_equal start_count
     end
 
     it "creates an account for a new user and redirects to the root route" do
 
       start_count = User.count
-      user = User.create(username: "chelsea", uid: 123456)
+      user = User.create(username: "chelsea", uid: 123456, provider: "github", email: "anything@yahoo.com")
 
       perform_login(user)
       must_redirect_to root_path

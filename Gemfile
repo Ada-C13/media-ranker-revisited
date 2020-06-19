@@ -31,13 +31,13 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+gem "omniauth"
+gem "omniauth-github"
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
 gem 'bootstrap', '~> 4.1.3'
-
-gem "omniauth"
-gem "omniauth-github"
 
 group :development, :test do
 
@@ -57,7 +57,6 @@ group :test do
   gem 'minitest-reporters'
   gem 'minitest-skip'
 end
-
 
 
 group :development do

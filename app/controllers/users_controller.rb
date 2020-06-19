@@ -12,7 +12,7 @@ class UsersController < ApplicationController
     auth_hash = request.env["omniauth.auth"]
     user = User.find_by(uid: auth_hash[:uid], provider: "github")
     if user
-      flash[:success] = "Logged in as returning user #{user.username}"  #TODO why does this not show? is this the Success CSS somewhere?
+      flash[:success] = "Logged in as returning user #{user.username}"  #TODO why does name not show? 
     else
       user = User.build_from_github(auth_hash)
       if user.save
