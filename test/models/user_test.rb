@@ -1,6 +1,7 @@
 require "test_helper"
 
 describe User do
+
   describe "relations" do
     it "has a list of votes" do
       dan = users(:dan)
@@ -17,7 +18,7 @@ describe User do
         expect(work).must_be_kind_of Work
       end
     end
-  end
+  end # describe "relations"
 
   describe "validations" do
     it "requires a username" do
@@ -28,15 +29,16 @@ describe User do
 
     it "requires a unique username" do
       username = "test username"
-      user1 = User.new(username: username)
+      user1 = User.new(username: username, uid: 11)
 
       # This must go through, so we use create!
       user1.save!
 
-      user2 = User.new(username: username)
+      user2 = User.new(username: username, uid: 12)
       result = user2.save
       expect(result).must_equal false
       expect(user2.errors.messages).must_include :username
     end
-  end
+  end # describe "validations"
+
 end

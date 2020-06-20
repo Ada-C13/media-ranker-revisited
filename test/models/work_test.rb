@@ -1,6 +1,7 @@
 require "test_helper"
 
 describe Work do
+
   describe "relations" do
     it "has a list of votes" do
       album = works(:album)
@@ -17,7 +18,7 @@ describe Work do
         expect(user).must_be_kind_of User
       end
     end
-  end
+  end # describe "relations"
 
   describe "validations" do
     it "allows the three valid categories" do
@@ -71,7 +72,7 @@ describe Work do
       work2 = Work.new(title: title, category: "book")
       expect(work2.valid?).must_equal true
     end
-  end
+  end # describe "validations"
 
   describe "vote_count" do
     it "defaults to 0" do
@@ -83,13 +84,13 @@ describe Work do
     it "tracks the number of votes" do
       work = Work.create!(title: "test title", category: "movie")
       4.times do |i|
-        user = User.create!(username: "user#{i}")
+        user = User.create!(username: "user#{i}", uid: 100 + i)
         Vote.create!(user: user, work: work)
       end
       expect(work.vote_count).must_equal 4
       expect(Work.find(work.id).vote_count).must_equal 4
     end
-  end
+  end # describe "vote_count"
 
   describe "top_ten" do
     before do
@@ -97,7 +98,7 @@ describe Work do
       # Create users to do the voting
       test_users = []
       20.times do |i|
-        test_users << User.create!(username: "user#{i}")
+        test_users << User.create!(username: "user#{i}", uid: 100 + i)
       end
 
       # Create media to vote upon
@@ -142,5 +143,6 @@ describe Work do
       Work.create(title: "phase 2 test movie 3", category: "movie")
       expect(Work.top_ten("movie").length).must_equal 10
     end
-  end
-end
+  end # describe "top_ten"
+
+end # describe Work
