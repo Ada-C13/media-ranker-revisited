@@ -23,14 +23,29 @@ describe UsersController do
 
 			expect {
 				perform_login(new_user)
-		}.must_change "User.count", 1
+			}.must_change "User.count", 1
 
 			must_respond_with :redirect
 		end
 	end
 
 	describe "logout" do
+		it "can logout a user" do
+			perform_login
+			expect(session[:user_id]).wont_be_nil
 
+			post logout_path
+			expect(session[:user_id]).must_be_nil
+
+			must_respond_with :redirect
+			must_redirect_to root_path
+		end
+
+		it "cannot logout if you are not logged in" do
+			post logout_path
+
+			expect(flash[:status]).must_equal :unauthorized
+      expect(flash[:error]).must_equal "No user logged in."
+		end
 	end
-
 end

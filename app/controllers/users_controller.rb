@@ -60,9 +60,15 @@ class UsersController < ApplicationController
   end
 
   def logout
-    session[:user_id] = nil
-    flash[:status] = :success
-    flash[:result_text] = "Successfully logged out"
-    redirect_to root_path
+    if !session[:user_id].nil?
+      session[:user_id] = nil
+      flash[:status] = :success
+      flash[:result_text] = "Successfully logged out"
+      redirect_to root_path
+    else
+      flash[:status] = :unauthorized
+      flash[:error] = "No user logged in."
+      redirect_to root_path
+    end
   end
 end
