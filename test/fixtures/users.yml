@@ -2,6 +2,17 @@
 
 dan:
   username: dan
-
 kari:
   username: kari
+haben:
+  name: haben
+  provider: github
+  uid: 1122
+  email: haben@adadeveloper.org
+  username: habsolo
+hannah:
+  name: hannah
+  provider: github
+  uid: 2233
+  email: hannah@adadevelopers.org
+  username: hanban
