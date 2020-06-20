@@ -33,21 +33,27 @@ class ActiveSupport::TestCase
 
   def mock_auth_hash(user)
     return {
-      provider: user.provider,
-      uid: user.uid,
-      info: {
-        email: user.email,
-        nickname: user.name
-      }
-    }
+             provider: user.provider,
+             uid: user.uid,
+             info: {
+               email: user.email,
+               name: user.username,
+             },
+           }
   end
+
+  # Helper method that performs a log-in with either
+  # a passed-in user of the first test user
 
   def perform_login(user = nil)
     user ||= User.first
-  
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
-    get auth_callback_path(:github)
-  
+
+    get omniauth_callback_path(:github)
+    user = User.find_by(uid: user.uid, username: user.username)
+    expect(user).wont_be_nil
+    expect(session[:user_id]).must_equal user.id
+
     return user
   end
 end
