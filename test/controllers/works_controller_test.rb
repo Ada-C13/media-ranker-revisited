@@ -198,7 +198,7 @@ describe WorksController do
     before do
       perform_login(users(:dan))
     end
-    
+
     it "succeeds for an extant work ID" do
       expect {
         delete work_path(existing_work.id)
@@ -280,6 +280,35 @@ describe WorksController do
 
     it "guest cannot access work show" do
       get "/works/#{existing_work.id}"
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest cannot access create" do
+      post works_path
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest cannot access new" do
+      get new_work_path
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest cannot access edit" do
+      get "/works/#{existing_work.id}/edit"
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest cannot access update" do
+      # path work_path
+      patch "/works/#{existing_work.id}"
       
       flash[:message].must_equal "You must be logged in to do this"
       must_redirect_to root_path
