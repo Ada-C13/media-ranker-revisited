@@ -59,7 +59,7 @@ class UsersController < ApplicationController
     redirect_to root_path
   end
 
-  def logout
+  def destroy
     if !session[:user_id].nil?
       session[:user_id] = nil
       flash[:status] = :success
