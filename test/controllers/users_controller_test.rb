@@ -17,6 +17,7 @@ describe UsersController do
       must_respond_with :redirect
     end
   end
+  
   describe "logout" do
     it "can logout as existing user" do
       # Arrnge
@@ -34,7 +35,7 @@ describe UsersController do
   describe "going to the detail page of the current user" do
     it "responds with success if a user is logged in" do
       perform_login
-
+      
       get current_user_path
 
       must_respond_with :success
