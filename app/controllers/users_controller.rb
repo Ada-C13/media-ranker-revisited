@@ -6,10 +6,17 @@ class UsersController < ApplicationController
     user = User.find_by(uid: auth_hash[:uid], provider: params[:provider])
     if user
       # User was found in the database
-      flash[:success] = "Logged in as returning user #{user.username}"
+      flash[:notice] = "Logged in as returning user #{user.username}"
     else
-      # User doesn't match anything in the DB
-      # TODO: Attempt to create a new user
+      user = User.build_from_github(auth_hash)
+      
+      if user.save 
+        flash[:success] = "Logged in as new user #{user.username}"
+
+      else 
+        flash[:error] = "Could not create user account #{user.errors.messages}"
+        return redirect_to root_path
+      end 
     end
 
     session[:user_id] = user.id
