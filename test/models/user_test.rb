@@ -20,18 +20,16 @@ describe User do
   end
 
   describe "validations" do
-    it "requires a username and UID" do
+    it "requires a username" do
       user = User.new
       expect(user.valid?).must_equal false
       expect(user.errors.messages).must_include :username
-      expect(user.errors.messages).must_include :uid
     end
 
     it "requires a unique username" do
       username = "test username"
       user1 = User.new(username: username)
 
-      # This must go through, so we use create!
       user1.save!
 
       user2 = User.new(username: username)

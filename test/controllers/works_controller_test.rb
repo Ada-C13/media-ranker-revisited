@@ -34,15 +34,19 @@ describe WorksController do
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
 
   describe "index" do
-    it "succeeds when there are works" do
+    before do
       perform_login(users(:dan))
+    end
+
+    it "succeeds when there are works" do
+      
       get works_path
 
       must_respond_with :success
     end
 
     it "succeeds when there are no works" do
-      perform_login(users(:dan))
+      
       Work.all do |work|
         work.destroy
       end
@@ -54,6 +58,10 @@ describe WorksController do
   end
 
   describe "new" do
+    before do
+      perform_login(users(:dan))
+    end
+
     it "succeeds" do
       get new_work_path
 
@@ -62,6 +70,10 @@ describe WorksController do
   end
 
   describe "create" do
+    before do
+      perform_login(users(:dan))
+    end
+
     it "creates a work with valid data for a real category" do
       new_work = { work: { title: "Dirty Computer", category: "album" } }
 
@@ -98,16 +110,20 @@ describe WorksController do
   end
 
   describe "show" do
+
+    before do
+      perform_login(users(:dan))
+    end
+
     it "succeeds for an extant work ID" do
     
-      perform_login(users(:dan))
       get work_path(existing_work.id)
 
       must_respond_with :success
     end
 
     it "renders 404 not_found for a bogus work ID" do
-      perform_login(users(:dan))
+      
       destroyed_id = existing_work.id
       existing_work.destroy
 
@@ -118,6 +134,10 @@ describe WorksController do
   end
 
   describe "edit" do
+    before do
+      perform_login(users(:dan))
+    end
+
     it "succeeds for an extant work ID" do
       get edit_work_path(existing_work.id)
 
@@ -135,6 +155,10 @@ describe WorksController do
   end
 
   describe "update" do
+    before do
+      perform_login(users(:dan))
+    end
+
     it "succeeds for valid data and an extant work ID" do
       updates = { work: { title: "Dirty Computer" } }
 
@@ -171,6 +195,10 @@ describe WorksController do
   end
 
   describe "destroy" do
+    before do
+      perform_login(users(:dan))
+    end
+    
     it "succeeds for an extant work ID" do
       expect {
         delete work_path(existing_work.id)
@@ -240,7 +268,7 @@ describe WorksController do
       must_redirect_to work_path(existing_work.id)
     end
   end
-  
+
   describe "Guest users" do
 
     it "guest cannot access index" do
@@ -250,7 +278,7 @@ describe WorksController do
       must_redirect_to root_path
     end
 
-    it "guest cannot access index" do
+    it "guest cannot access work show" do
       get "/works/#{existing_work.id}"
       
       flash[:message].must_equal "You must be logged in to do this"
@@ -258,7 +286,7 @@ describe WorksController do
     end
 
     it "guest can access root" do
-      get root route
+      get root_path
       
       must_respond_with :success
     end
