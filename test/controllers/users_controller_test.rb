@@ -34,7 +34,7 @@ describe UsersController do
 			perform_login
 			expect(session[:user_id]).wont_be_nil
 
-			post logout_path
+			delete logout_path
 			expect(session[:user_id]).must_be_nil
 
 			must_respond_with :redirect
@@ -42,7 +42,7 @@ describe UsersController do
 		end
 
 		it "cannot logout if you are not logged in" do
-			post logout_path
+			delete logout_path
 
 			expect(flash[:status]).must_equal :unauthorized
       expect(flash[:error]).must_equal "No user logged in."

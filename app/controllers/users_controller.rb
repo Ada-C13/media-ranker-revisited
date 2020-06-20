@@ -64,11 +64,12 @@ class UsersController < ApplicationController
       session[:user_id] = nil
       flash[:status] = :success
       flash[:result_text] = "Successfully logged out"
-      redirect_to root_path
     else
       flash[:status] = :unauthorized
       flash[:error] = "No user logged in."
-      redirect_to root_path
     end
+
+    redirect_to root_path
+    return
   end
 end
