@@ -25,6 +25,32 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
 
   def setup 
-    OmiAuth.config.test_mode = true 
+    OmniAuth.config.test_mode = true 
   end 
+
+  def mock_auth_hash(user)
+    return {
+      provider: user.provider,
+      uid: user.uid,
+      info: {
+        nickname: user.username,
+        email: user.email,
+        image: user.avatar
+      },
+    }
+  end 
+
+  def perform_login(user = nil)
+    user ||= User.first
+    OmniAuth.config.mock_auth[:github ] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+    get omniauth_callback_path(:github)
+
+    user = User.find_by(uid: user.uid, username: user.username)
+    expect(session[:user_id]).must_equal user.id
+    return user
+  end 
+
+  def perform_logout
+    delete logout_path
+  end
 end
