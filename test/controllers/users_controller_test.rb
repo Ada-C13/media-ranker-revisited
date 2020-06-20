@@ -40,12 +40,5 @@ describe UsersController do
 			must_respond_with :redirect
 			must_redirect_to root_path
 		end
-
-		it "cannot logout if you are not logged in" do
-			delete logout_path
-
-			expect(flash[:status]).must_equal :unauthorized
-      expect(flash[:error]).must_equal "No user logged in."
-		end
 	end
 end

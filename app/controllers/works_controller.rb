@@ -62,8 +62,12 @@ class WorksController < ApplicationController
   end
 
   def upvote
+    puts "did i make it to upvote"
+
     flash[:status] = :failure
     if @login_user
+      p "logged in"
+    
       vote = Vote.new(user: @login_user, work: @work)
       if vote.save
         flash[:status] = :success
@@ -73,6 +77,8 @@ class WorksController < ApplicationController
         flash[:messages] = vote.errors.messages
       end
     else
+      p "not logged"
+
       flash[:result_text] = "You must log in to do that"
     end
 
