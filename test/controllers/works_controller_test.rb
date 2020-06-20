@@ -34,13 +34,19 @@ describe WorksController do
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
 
   describe "index" do
+    before do
+      perform_login(users(:dan))
+    end
+
     it "succeeds when there are works" do
+      
       get works_path
 
       must_respond_with :success
     end
 
     it "succeeds when there are no works" do
+      
       Work.all do |work|
         work.destroy
       end
@@ -52,6 +58,10 @@ describe WorksController do
   end
 
   describe "new" do
+    before do
+      perform_login(users(:dan))
+    end
+
     it "succeeds" do
       get new_work_path
 
@@ -60,6 +70,10 @@ describe WorksController do
   end
 
   describe "create" do
+    before do
+      perform_login(users(:dan))
+    end
+
     it "creates a work with valid data for a real category" do
       new_work = { work: { title: "Dirty Computer", category: "album" } }
 
@@ -96,13 +110,20 @@ describe WorksController do
   end
 
   describe "show" do
+
+    before do
+      perform_login(users(:dan))
+    end
+
     it "succeeds for an extant work ID" do
+    
       get work_path(existing_work.id)
 
       must_respond_with :success
     end
 
     it "renders 404 not_found for a bogus work ID" do
+      
       destroyed_id = existing_work.id
       existing_work.destroy
 
@@ -113,6 +134,10 @@ describe WorksController do
   end
 
   describe "edit" do
+    before do
+      perform_login(users(:dan))
+    end
+
     it "succeeds for an extant work ID" do
       get edit_work_path(existing_work.id)
 
@@ -130,6 +155,10 @@ describe WorksController do
   end
 
   describe "update" do
+    before do
+      perform_login(users(:dan))
+    end
+
     it "succeeds for valid data and an extant work ID" do
       updates = { work: { title: "Dirty Computer" } }
 
@@ -166,6 +195,10 @@ describe WorksController do
   end
 
   describe "destroy" do
+    before do
+      perform_login(users(:dan))
+    end
+
     it "succeeds for an extant work ID" do
       expect {
         delete work_path(existing_work.id)
@@ -189,19 +222,102 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
+      post upvote_path(existing_work.id)
+
+      must_respond_with :redirect
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+
+      user = perform_login()
+      expect(user.username).must_equal "dan"
+
+      post logout_path
+
+      post upvote_path(existing_work.id)
+
+      must_respond_with :redirect
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      user = perform_login()
+      expect(user.username).must_equal "dan"
+
+      post upvote_path(existing_work.id)
+
+      must_respond_with :redirect
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      
+      user = perform_login()
+      expect(user.username).must_equal "dan"
+
+      post upvote_path(existing_work.id)
+      must_respond_with :redirect
+      must_redirect_to work_path(existing_work.id)
+
+      count = Vote.all.count
+
+      post upvote_path(existing_work.id)
+      expect(count).must_equal count
+      must_respond_with :redirect
+      must_redirect_to work_path(existing_work.id)
+    end
+  end
+
+  describe "Guest users" do
+
+    it "guest cannot access index" do
+      get works_path
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest cannot access work show" do
+      get "/works/#{existing_work.id}"
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest cannot access create" do
+      post works_path
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest cannot access new" do
+      get new_work_path
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest cannot access edit" do
+      get "/works/#{existing_work.id}/edit"
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest cannot access update" do
+      # path work_path
+      patch "/works/#{existing_work.id}"
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest can access root" do
+      get root_path
+      
+      must_respond_with :success
     end
   end
 end

@@ -30,7 +30,6 @@ describe User do
       username = "test username"
       user1 = User.new(username: username)
 
-      # This must go through, so we use create!
       user1.save!
 
       user2 = User.new(username: username)
@@ -38,5 +37,6 @@ describe User do
       expect(result).must_equal false
       expect(user2.errors.messages).must_include :username
     end
+
   end
 end
