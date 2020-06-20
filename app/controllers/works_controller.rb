@@ -65,19 +65,19 @@ class WorksController < ApplicationController
     if @login_user
       vote = Vote.new(user: @login_user, work: @work)
       if vote.save
+        p vote.errors
         flash[:status] = :success
         flash[:result_text] = "Successfully upvoted!"
+        redirect_back fallback_location: work_path(@work), :status => 302
       else
         flash[:result_text] = "Could not upvote"
         flash[:messages] = vote.errors.messages
+        redirect_back fallback_location: work_path(@work), :status => 304
       end
     else
       flash[:result_text] = "You must log in to do that"
+      redirect_to works_path
     end
-
-    # Refresh the page to show either the updated vote count
-    # or the error message ???
-    redirect_back fallback_location: work_path(@work)
   end
 
   private

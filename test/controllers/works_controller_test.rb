@@ -189,24 +189,59 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
+      # Arrange
+
+      # Act
+      post upvote_path(existing_work)
+
+      # Assert
+      must_redirect_to works_path
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+      # Arrange
+      start_count = User.count
+      user = users(:grace)
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+      get auth_callback_path(:github)
+      delete logout_path
+
+      # Act
+      post upvote_path(existing_work)
+
+      # Assert
+      must_redirect_to works_path
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      # Arrange
+      start_count = User.count
+      user = users(:grace)
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+      get auth_callback_path(:github)
+
+      # Act
+      post upvote_path(existing_work)
+
+      # Assert
+      must_respond_with 302
+      must_redirect_to work_path(existing_work)
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      # Arrange
+      start_count = User.count
+      user = users(:grace)
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+      get auth_callback_path(:github)
+      post upvote_path(existing_work)
+
+      # Act
+      post upvote_path(existing_work)
+
+      # Assert
+      must_respond_with 304
+      must_redirect_to work_path(existing_work)
     end
   end
 end
-# As part of the arrange section you need to:
-# 1) create the order you are planning to updating
-# 2) set the order id in the session object
-# So when you call the endpoint to update, find_order in ApplicationController finds the order id in session
-# And @shopping_cart is set
