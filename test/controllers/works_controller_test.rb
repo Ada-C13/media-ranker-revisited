@@ -34,13 +34,29 @@ describe WorksController do
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
 
   describe "index" do
+    it "fails if not logged in" do
+      get works_path
+
+      must_redirect_to root_path
+    end
+
     it "succeeds when there are works" do
+      start_count = User.count
+      user = users(:grace)
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+      get auth_callback_path(:github)
+
       get works_path
 
       must_respond_with :success
     end
 
     it "succeeds when there are no works" do
+      start_count = User.count
+      user = users(:grace)
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+      get auth_callback_path(:github)
+
       Work.all do |work|
         work.destroy
       end
@@ -96,13 +112,29 @@ describe WorksController do
   end
 
   describe "show" do
-    it "succeeds for an extant work ID" do
+    it "fails if not logged in" do
+      get work_path(existing_work.id)
+
+      must_redirect_to root_path
+    end
+
+    it "succeeds for an existing work ID" do
+      start_count = User.count
+      user = users(:grace)
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+      get auth_callback_path(:github)
+
       get work_path(existing_work.id)
 
       must_respond_with :success
     end
 
     it "renders 404 not_found for a bogus work ID" do
+      start_count = User.count
+      user = users(:grace)
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+      get auth_callback_path(:github)
+
       destroyed_id = existing_work.id
       existing_work.destroy
 
@@ -195,7 +227,7 @@ describe WorksController do
       post upvote_path(existing_work)
 
       # Assert
-      must_redirect_to works_path
+      must_redirect_to root_path
     end
 
     it "redirects to the work page after the user has logged out" do
@@ -210,7 +242,7 @@ describe WorksController do
       post upvote_path(existing_work)
 
       # Assert
-      must_redirect_to works_path
+      must_redirect_to root_path
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do

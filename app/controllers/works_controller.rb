@@ -1,8 +1,10 @@
 class WorksController < ApplicationController
-
+  
+  # Login required for show, index and upvote
+  before_action :require_login, only: [:index, :show, :upvote]
   # Always tell what category of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
-  # , :show, :update, :destroy, :upvote ???
+
   def root
     @albums = Work.best_albums
     @books = Work.best_books
@@ -61,22 +63,15 @@ class WorksController < ApplicationController
   end
 
   def upvote
-    flash[:status] = :failure
-    if @login_user
-      vote = Vote.new(user: @login_user, work: @work)
-      if vote.save
-        p vote.errors
-        flash[:status] = :success
-        flash[:result_text] = "Successfully upvoted!"
-        redirect_back fallback_location: work_path(@work), :status => 302
-      else
-        flash[:result_text] = "Could not upvote"
-        flash[:messages] = vote.errors.messages
-        redirect_back fallback_location: work_path(@work), :status => 304
-      end
+    vote = Vote.new(user: @login_user, work: @work)
+    if vote.save
+      flash[:status] = :success
+      flash[:result_text] = "Successfully upvoted!"
+      redirect_back fallback_location: work_path(@work), :status => 302
     else
-      flash[:result_text] = "You must log in to do that"
-      redirect_to works_path
+      flash[:result_text] = "Could not upvote"
+      flash[:messages] = vote.errors.messages
+      redirect_back fallback_location: work_path(@work), :status => 304
     end
   end
 
@@ -91,4 +86,13 @@ class WorksController < ApplicationController
     render_404 unless @work
     @media_category = @work.category.downcase.pluralize
   end
+
+  def require_login
+    if !@login_user
+      flash[:status] = :failure
+      flash[:result_text] = "You must log in to do that"
+      redirect_to root_path
+    end
+  end
+
 end
