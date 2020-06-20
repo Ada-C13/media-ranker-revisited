@@ -414,22 +414,22 @@ describe WorksController do
   
     describe "upvote" do
       it "redirects if no user is logged in" do
-        # expect {
+        expect {
           post upvote_path(existing_work)
-        # }.wont_change "Work.count"
+        }.wont_change "Work.count"
 
         must_respond_with :redirect
-        expect(flash[:result_text]).must_equal "You must log in to do that"
       end
   
       it "redirects to the work page after the user has logged out" do
         perform_login
         delete logout_path
 
-        post "/works/#{existing_work.id}/upvote"
-        # post upvote_path(existing_work)
+        expect {
+          post upvote_path(existing_work)
+        }.wont_change "Work.count"
+
         must_respond_with :redirect
-        expect(flash[:result_text]).must_equal "You must log in to do that"
       end
     end
 
