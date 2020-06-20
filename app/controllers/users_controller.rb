@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-
+  before_action :find_user
 
   def create
     auth_hash = request.env["omniauth.auth"]
