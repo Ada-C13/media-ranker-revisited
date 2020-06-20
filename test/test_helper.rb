@@ -34,7 +34,7 @@ class ActiveSupport::TestCase
       uid: user.uid,
       info: {
         email: user.email,
-        nickname: user.username
+        nickname: user.username,
         name: user.name
       }
     }
@@ -46,7 +46,7 @@ class ActiveSupport::TestCase
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
 
     get "/auth/github/callback"
-
+    
     return user
   end
 end
