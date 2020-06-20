@@ -20,10 +20,11 @@ describe User do
   end
 
   describe "validations" do
-    it "requires a username" do
+    it "requires a username and UID" do
       user = User.new
       expect(user.valid?).must_equal false
       expect(user.errors.messages).must_include :username
+      expect(user.errors.messages).must_include :uid
     end
 
     it "requires a unique username" do
@@ -38,5 +39,6 @@ describe User do
       expect(result).must_equal false
       expect(user2.errors.messages).must_include :username
     end
+
   end
 end

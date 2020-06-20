@@ -35,12 +35,14 @@ describe WorksController do
 
   describe "index" do
     it "succeeds when there are works" do
+      perform_login(users(:dan))
       get works_path
 
       must_respond_with :success
     end
 
     it "succeeds when there are no works" do
+      perform_login(users(:dan))
       Work.all do |work|
         work.destroy
       end
@@ -97,12 +99,15 @@ describe WorksController do
 
   describe "show" do
     it "succeeds for an extant work ID" do
+    
+      perform_login(users(:dan))
       get work_path(existing_work.id)
 
       must_respond_with :success
     end
 
     it "renders 404 not_found for a bogus work ID" do
+      perform_login(users(:dan))
       destroyed_id = existing_work.id
       existing_work.destroy
 
@@ -197,8 +202,6 @@ describe WorksController do
 
     it "redirects to the work page after the user has logged out" do
 
-      #TODO ask how they want this test interperted?
-
       user = perform_login()
       expect(user.username).must_equal "dan"
 
@@ -221,7 +224,7 @@ describe WorksController do
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      #TODO ask how they want this test interperted? Are we supposed to alter the upvote action to say if the new vote already exists flash: you already voted and redirect?
+      
       user = perform_login()
       expect(user.username).must_equal "dan"
 
@@ -229,9 +232,35 @@ describe WorksController do
       must_respond_with :redirect
       must_redirect_to work_path(existing_work.id)
 
+      count = Vote.all.count
+
       post upvote_path(existing_work.id)
+      expect(count).must_equal count
       must_respond_with :redirect
       must_redirect_to work_path(existing_work.id)
+    end
+  end
+  
+  describe "Guest users" do
+
+    it "guest cannot access index" do
+      get works_path
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest cannot access index" do
+      get "/works/#{existing_work.id}"
+      
+      flash[:message].must_equal "You must be logged in to do this"
+      must_redirect_to root_path
+    end
+
+    it "guest can access root" do
+      get root route
+      
+      must_respond_with :success
     end
   end
 end

@@ -7,6 +7,13 @@ class ApplicationController < ActionController::Base
     # DPR: this will actually render a 404 page in production
     raise ActionController::RoutingError.new("Not Found")
   end
+ 
+  def require_login
+    if find_user.nil?
+      flash[:message] = "You must be logged in to do this"
+      redirect_to root_path
+    end
+  end
 
 private 
 
