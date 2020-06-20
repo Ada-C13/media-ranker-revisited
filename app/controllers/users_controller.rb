@@ -37,5 +37,6 @@ class UsersController < ApplicationController
     flash[:status] = :success
     flash[:result_text] = "Successfully logged out"
     redirect_to root_path
+    return
   end
 end

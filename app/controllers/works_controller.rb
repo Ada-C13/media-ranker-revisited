@@ -67,12 +67,17 @@ class WorksController < ApplicationController
     flash[:status] = :failure
     if @login_user
       p "logged in"
-    
+      p @login_user
+      p @work
       vote = Vote.new(user: @login_user, work: @work)
+      p vote.valid?
+      p vote.errors
       if vote.save
+        p "win"
         flash[:status] = :success
         flash[:result_text] = "Successfully upvoted!"
       else
+        p "lose"
         flash[:result_text] = "Could not upvote"
         flash[:messages] = vote.errors.messages
       end
