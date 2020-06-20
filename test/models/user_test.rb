@@ -38,5 +38,27 @@ describe User do
       expect(result).must_equal false
       expect(user2.errors.messages).must_include :username
     end
+
+    it "requires a unique uid" do
+      new_user = User.create(
+				provider: "github",
+				uid: 22,
+				email: "kari@gmail.com",
+				username: "bingus",
+				name: "leroy"
+      )
+
+      dup_user = User.new(
+				provider: "github",
+				uid: 22,
+				email: "kari@gmail.com",
+				username: "bingos",
+				name: "leroy"
+      )
+      
+      result = dup_user.save
+      expect(result).must_equal false
+      expect(dup_user.errors.messages).must_include :uid
+    end
   end
 end
