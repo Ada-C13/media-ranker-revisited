@@ -1,6 +1,7 @@
 require "test_helper"
 
 describe Vote do
+
   describe "relations" do
     it "has a user" do
       v = votes(:one)
@@ -13,7 +14,7 @@ describe Vote do
       expect(v).must_respond_to :work
       expect(v.work).must_be_kind_of Work
     end
-  end
+  end # describe "relations"
 
   describe "validations" do
     let (:user1) { User.new(username: "chris", uid: 20) }
@@ -42,5 +43,6 @@ describe Vote do
       expect(vote2.valid?).must_equal false
       expect(vote2.errors.messages).must_include :user
     end
-  end
-end
+  end # describe "validations"
+
+end # describe Vote

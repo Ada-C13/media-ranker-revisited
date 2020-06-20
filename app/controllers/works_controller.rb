@@ -1,8 +1,8 @@
 class WorksController < ApplicationController
-  # We should always be able to tell what category
-  # of work we're dealing with
-  before_action :category_from_work, except: [:root, :index, :new, :create]
 
+  # Always tell what category of work we're dealing with
+  before_action :category_from_work, except: [:root, :index, :new, :create]
+  # , :show, :update, :destroy, :upvote ???
   def root
     @albums = Work.best_albums
     @books = Work.best_books
@@ -76,7 +76,7 @@ class WorksController < ApplicationController
     end
 
     # Refresh the page to show either the updated vote count
-    # or the error message
+    # or the error message ???
     redirect_back fallback_location: work_path(@work)
   end
 

@@ -1,4 +1,5 @@
 class Work < ApplicationRecord
+
   CATEGORIES = %w(album book movie)
   has_many :votes, dependent: :destroy
   has_many :ranking_users, through: :votes, source: :user
@@ -50,4 +51,5 @@ class Work < ApplicationRecord
       self.category = self.category.downcase.singularize
     end
   end
+  
 end

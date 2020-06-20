@@ -1,6 +1,7 @@
 require "test_helper"
 
 describe UsersController do
+
   describe "auth_callback" do
     it "logs in an existing user and redirects to the root route" do
       # Arrange
@@ -46,7 +47,7 @@ describe UsersController do
       must_redirect_to root_path
       User.count.must_equal start_count
     end
-  end
+  end # describe "auth_callback"
 
   describe "logout" do
     it "logs out and redirects to the root route" do
@@ -63,5 +64,6 @@ describe UsersController do
       must_redirect_to root_path
       session[:user_id].must_be_nil
     end
-  end
+  end # describe "logout"
+
 end

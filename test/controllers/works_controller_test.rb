@@ -205,3 +205,8 @@ describe WorksController do
     end
   end
 end
+# As part of the arrange section you need to:
+# 1) create the order you are planning to updating
+# 2) set the order id in the session object
+# So when you call the endpoint to update, find_order in ApplicationController finds the order id in session
+# And @shopping_cart is set
