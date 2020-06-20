@@ -1,62 +1,48 @@
 require "test_helper"
 
 describe UsersController do
-  describe "auth_callback" do
-    it "logs in an existing user and redirects to the root route" do
-      # Count the users, to make sure we're not (for example) creating
-      # a new user every time we get a login request
-      start_count = User.count
-
-      # Get a user from the fixtures
-      user = users(:grace)
-
-      # Tell OmniAuth to use this user's info when it sees
-      # an auth callback from github
-      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
-
-      # Send a login request for that user
-      # Note that we're using the named path for the callback, as defined
-      # in the `as:` clause in `config/routes.rb`
-      get auth_callback_path(:github)
-
-      must_redirect_to root_path
-
-      # Since we can read the session, check that the user ID was set as expected
-      session[:user_id].must_equal user.id
-
-      # Should *not* have created a new user
-      User.count.must_equal start_count
+  describe "login" do
+    it "can log in an existing user" do
+      user = perform_login(users(:haben))
+      must_respond_with :redirect
     end
 
-    it "creates a new user" do
-      start_count = User.count
-      user = User.new(provider: "github", uid: 99999, name: "test_user", email: "test@user.com")
-    
-      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
-      get auth_callback_path(:github)
-    
+    it "can login in a new user" do
+      new_user = User.new(uid: "2244", username: "havana", provider: "github", email: "havana@gmail.com")
+
+      expect do
+        logged_in_user = perform_login(new_user)
+      end.must_change "User.count", 1
+
+      must_respond_with :redirect
+    end
+  end
+
+  describe "logout" do
+    it "can logout as existing user" do
+      perform_login
+
+      expect(session[:user_id]).wont_be_nil
+
+      delete logout_path, params: {}
+
+      expect(session[:user_id]).must_be_nil
       must_redirect_to root_path
-    
-      # Should have created a new user
-      User.count.must_equal start_count + 1
-    
-      # The new user's ID should be set in the session
-      session[:user_id].must_equal User.last.id
+    end
+  end
+
+  describe "going to the detail page of the current user" do
+    it "responds with success if a user is logged in" do
+      perform_login
+
+      get current_user_path
+
+      must_respond_with :success
     end
 
-    it "logs in an existing user" do
-      start_count = User.count
-      user = users(:grace)
-    
-      perform_login(user)
-      must_redirect_to root_path
-      session[:user_id].must_equal  user.id
-    
-      # Should *not* have created a new user
-      User.count.must_equal start_count
-    end
-
-    it "redirects to the login route if given invalid user data" do
+    it "responds with a redirect if no user is logged in" do
+      get current_user_path
+      must_respond_with :redirect
     end
   end
 end

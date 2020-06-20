@@ -13,6 +13,7 @@ class User < ApplicationRecord
 
     # Note that the user has not been saved.
     # We'll choose to do the saving outside of this method
+    # this is done in the controller under the create action
     return user
   end
 end
