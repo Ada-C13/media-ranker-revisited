@@ -23,9 +23,13 @@ describe UsersController do
       post logout_path
       expect(session[:user_id]).must_be_nil
       must_respond_with :redirect
+      must_redirect_to root_path
     end
-    it "guest users on that route" do 
-        #TODO:
+    it "guest users on that route" do
+      post logout_path
+      expect(flash[:error]).must_equal "You must be logged in to log out!"
+      must_respond_with :redirect
+      must_redirect_to root_path
     end
   end
 end
