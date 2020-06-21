@@ -11,3 +11,9 @@ ada:
   email: ada@adadev.org
   username: ada
   avatar: https://avatars3.githubusercontent.com/u/59400719?s=200&v=4
+dan:
+  provider: github
+  uid: 9101112
+  email: dan@adadev.org
+  username: dan
+  avatar: https://avatars3.githubusercontent.com/u/59400719?s=200&v=4
