@@ -39,4 +39,28 @@ describe User do
       expect(user2.errors.messages).must_include :username
     end
   end
+
+  describe "custom methods" do 
+    describe "self.build_from_github" do 
+      it "can build a user from github" do    
+        auth_hash = {
+          "uid" => 9876651,
+          "provider" => "github",
+          "info" => {
+            "nickname" => "pengsoo",
+            "email" => "pengsoo@ada.com",
+            "image" => "random image"
+          }
+        }
+
+        current_user = User.build_from_github(auth_hash)
+
+        expect(current_user).must_be_kind_of User
+        expect(current_user.uid).must_equal "9876651"
+        expect(current_user.provider).must_equal "github"
+        expect(current_user.username).must_equal "pengsoo"
+        expect(current_user.email).must_equal "pengsoo@ada.com"
+      end
+    end
+  end
 end
