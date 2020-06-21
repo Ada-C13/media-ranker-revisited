@@ -1,6 +1,15 @@
 class UsersController < ApplicationController
   skip_before_action :require_login, only: [:create]
 
+  def index
+    @users = User.all
+  end
+
+  def show
+    @user = User.find_by(id: params[:id])
+    render_404 unless @user
+  end
+
   def create
     auth_hash = request.env["omniauth.auth"]
     user = User.find_by(uid: auth_hash[:uid], provider: params[:provider])
@@ -23,16 +32,6 @@ class UsersController < ApplicationController
     session[:username] = user.username
     redirect_to root_path
     return
-  end
-
-
-  def index
-    @users = User.all
-  end
-
-  def show
-    @user = User.find_by(id: params[:id])
-    render_404 unless @user
   end
 
   def destroy

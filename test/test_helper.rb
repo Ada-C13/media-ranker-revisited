@@ -42,10 +42,11 @@ class ActiveSupport::TestCase
 
   def perform_login(user = nil)
     user ||= User.first
-    OmniAuth.config.mock_auth[:github ] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+    OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
     get omniauth_callback_path(:github)
 
     user = User.find_by(uid: user.uid, username: user.username)
+    expect(user).wont_be_nil
     expect(session[:user_id]).must_equal user.id
     return user
   end 
