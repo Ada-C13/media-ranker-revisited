@@ -2,6 +2,12 @@
 
 dan:
   username: dan
+  uid: 12345
+  email: dan@ada.org
+  provider: github
 
 kari:
   username: kari
+  uid: 67890
+  email: kari@ada.org
+  provider: github
