@@ -34,13 +34,18 @@ describe WorksController do
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
 
   describe "index" do
-    it "succeeds when there are works" do
+    it "succeeds for logged-in user" do
+      user = users(:dan)
+      perform_login(user)
       get works_path
 
       must_respond_with :success
     end
 
     it "succeeds when there are no works" do
+      user = users(:dan)
+      perform_login(user)
+
       Work.all do |work|
         work.destroy
       end
@@ -48,6 +53,13 @@ describe WorksController do
       get works_path
 
       must_respond_with :success
+    end
+
+    it "redirects to root with an error message for guest users" do
+      get works_path
+      expect(flash[:status]).must_equal :failure
+      expect(flash[:result_text]).must_include "not authorized to view this page"
+      must_redirect_to root_path
     end
   end
 
