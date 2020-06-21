@@ -28,6 +28,24 @@ describe UsersController do
         expect(flash[:status]).must_equal :success
         expect(flash[:result_text]).must_equal "Logged in as new user #{(new_user).username}"
     end
+
+    # it 'cannot create a new user profile if  the uid already exist for another user' do
+    #   new_user = User.new(
+    #     uid: '56789',
+    #     username: 'HarryPotter',
+    #     provider: 'github',
+    #     avatar: "https://avatars3.githubusercontent.com/u/59400719?s=200&v=4",
+    #     email: 'harrypotter@ada.edu',
+    #     )
+      
+    #     expect {
+    #       perform_login(new_user)
+    #     }.must_equal false
+        
+    #   expect(flash[:status]).must_equal :failure
+    #   expect(flash[:result_text]).must_equal "Couldn't create user account"
+    #   must_respond_with :redirect 
+    # end
   end
 
   describe 'current' do
@@ -62,6 +80,6 @@ describe UsersController do
       expect(flash[:status]).must_equal :failure
       expect(flash[:result_text]).must_equal "You must be logged in before to logout!"
       must_redirect_to root_path
-    end
+    end    
   end
 end
