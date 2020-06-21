@@ -14,7 +14,6 @@ class UsersController < ApplicationController
     auth_hash = request.env["omniauth.auth"]
     user = User.find_by(uid: auth_hash[:uid], provider: params[:provider])
     if user
-      # User was found in the database
       flash[:notice] = "Logged in as returning user #{user.username}"
     else
       user = User.build_from_github(auth_hash)
