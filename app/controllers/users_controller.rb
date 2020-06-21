@@ -26,6 +26,7 @@ class UsersController < ApplicationController
         flash[:result_text] = "Could not log in"
         flash[:messages] = user.errors.messages
         redirect_to root_path
+        return
       end
     end
     
