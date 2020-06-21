@@ -2,6 +2,25 @@
 
 dan:
   username: dan
-
+  uid: 12312
+  provider: github
+  email: dan@gmail.com
+  avatar: http://danavatar
 kari:
   username: kari
+  uid: 45156
+  provider: github
+  email: kari@gmail.com
+  avatar: http://kariavatar
+nena:
+  username: nena
+  uid: 45651
+  provider: github
+  email: nena@gmail.com
+  avatar: http://nenaavatar
+max:
+  username: max
+  uid: 45656
+  provider: github
+  email: max@gmail.com
+  avatar: http://maxavatar

@@ -2,7 +2,7 @@ class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
-  before_action :require_login, only: [:index]
+  before_action :require_login, except: [:root]
   #before_action :find_user, only: [:index]
 
   def root
