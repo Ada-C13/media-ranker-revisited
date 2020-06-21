@@ -20,7 +20,7 @@ class UsersController < ApplicationController
       # Attempt to create a new user
       user = User.build_from_github(auth_hash)
 
-      if user.save!
+      if user.save
         flash[:success] = "Logged in as new user #{user.username}"
       else
         # Couldn't save the user for some reason. If we
