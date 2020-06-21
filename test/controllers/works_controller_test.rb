@@ -108,19 +108,31 @@ describe WorksController do
   end
 
   describe "show" do
-    it "succeeds for an extant work ID" do
+    it "succeeds for an extant work ID for logged-in users" do
+      user = users(:dan)
+      perform_login(user)
       get work_path(existing_work.id)
 
       must_respond_with :success
     end
 
     it "renders 404 not_found for a bogus work ID" do
+      user = users(:dan)
+      perform_login(user)
       destroyed_id = existing_work.id
       existing_work.destroy
 
       get work_path(destroyed_id)
 
       must_respond_with :not_found
+    end
+
+    it "redirects to root with an error message for guest users" do
+      get work_path(existing_work.id)
+
+      expect(flash[:status]).must_equal :failure
+      expect(flash[:result_text]).must_include "not authorized to view this page"
+      must_redirect_to root_path
     end
   end
 

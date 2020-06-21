@@ -40,7 +40,13 @@ class WorksController < ApplicationController
   end
 
   def show
-    @votes = @work.votes.order(created_at: :desc)
+    if @login_user
+      @votes = @work.votes.order(created_at: :desc)
+    else
+      flash[:status] = :failure
+      flash[:result_text] = "not authorized to view this page."
+      redirect_to root_path
+    end
   end
 
   def edit
