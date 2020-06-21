@@ -229,9 +229,75 @@ describe WorksController do
   end
 
   describe "GUEST USER" do
-    
+    before do
+      @work = works(:album)
+      @new_work = { 
+        work: { 
+          title: "Alice in Wonderland", 
+          category: "book" 
+        } 
+      }
+    end
+
+    it "can successfully access home page" do
+      get root_path
+      must_respond_with :success
+    end
+
+    it "can't access index page" do
+      get works_path
+      must_redirect_to root_path
+      expect(flash[:result_text]).must_equal "You must be logged in to do that"
+    end
+
+    it "can't access new form" do
+      get new_work_path
+      must_redirect_to root_path
+      expect(flash[:result_text]).must_equal "You must be logged in to do that"
+    end
+
+    it "can't create new work" do
+      expect {
+        post works_path, params: @new_work
+      }.wont_change "Work.count"
+      must_redirect_to root_path
+      expect(flash[:result_text]).must_equal "You must be logged in to do that"
+    end
+
+    it "can't access show page" do
+      get work_path(@work.id)
+      must_redirect_to root_path
+      expect(flash[:result_text]).must_equal "You must be logged in to do that"
+    end
+
+    it "can't not access edit work form" do
+      get edit_work_path(@work.id)
+      must_redirect_to root_path
+      expect(flash[:result_text]).must_equal "You must be logged in to do that"
+    end
+
+    it "can't not update work" do
+      expect {
+        put work_path(@work.id), params: @new_work
+      }.wont_change "Work.count"
+      must_redirect_to root_path
+      expect(flash[:result_text]).must_equal "You must be logged in to do that"
+    end
+
+    it "can't not destroy work" do
+      expect {
+        delete work_path(@work.id)
+      }.wont_change "Work.count"
+      must_redirect_to root_path
+      expect(flash[:result_text]).must_equal "You must be logged in to do that"
+    end
+
+    it "can't not vote for work" do
+      expect {
+        post upvote_path(@work.id)
+      }.wont_change "Vote.count"
+      must_redirect_to root_path
+      expect(flash[:result_text]).must_equal "You must be logged in to do that"
+    end
   end
-
-
- 
 end
