@@ -2,6 +2,7 @@ class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
+  before_action :require_login, only: [:index, :show, :new, :create, :edit, :update]
 
   def root
     @albums = Work.best_albums
@@ -29,7 +30,7 @@ class WorksController < ApplicationController
       flash[:status] = :failure
       flash[:result_text] = "Could not create #{@media_category.singularize}"
       flash[:messages] = @work.errors.messages
-      render :new, status: :bad_request
+      render :new, status: :not_found
     end
   end
 
@@ -74,9 +75,7 @@ class WorksController < ApplicationController
     else
       flash[:result_text] = "You must log in to do that"
     end
-
-    # Refresh the page to show either the updated vote count
-    # or the error message
+    
     redirect_back fallback_location: work_path(@work)
   end
 

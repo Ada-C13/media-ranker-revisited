@@ -2,6 +2,7 @@ require "test_helper"
 
 describe WorksController do
   let(:existing_work) { works(:album) }
+  let(:user) { users(:quin) }
 
   describe "root" do
     it "succeeds with all media types" do
@@ -11,6 +12,7 @@ describe WorksController do
     end
 
     it "succeeds with one media type absent" do
+      mock_login(user)
       only_book = works(:poodr)
       only_book.destroy
 
@@ -20,6 +22,7 @@ describe WorksController do
     end
 
     it "succeeds with no media" do
+      mock_login(user)
       Work.all do |work|
         work.destroy
       end
@@ -34,13 +37,16 @@ describe WorksController do
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
 
   describe "index" do
+
     it "succeeds when there are works" do
+      mock_login(user)
       get works_path
 
       must_respond_with :success
     end
 
     it "succeeds when there are no works" do
+      mock_login(user)
       Work.all do |work|
         work.destroy
       end
@@ -53,6 +59,7 @@ describe WorksController do
 
   describe "new" do
     it "succeeds" do
+      mock_login(user)
       get new_work_path
 
       must_respond_with :success
@@ -61,6 +68,7 @@ describe WorksController do
 
   describe "create" do
     it "creates a work with valid data for a real category" do
+      mock_login(user)
       new_work = { work: { title: "Dirty Computer", category: "album" } }
 
       expect {
@@ -74,6 +82,7 @@ describe WorksController do
     end
 
     it "renders bad_request and does not update the DB for bogus data" do
+      mock_login(user)
       bad_work = { work: { title: nil, category: "book" } }
 
       expect {
@@ -84,6 +93,7 @@ describe WorksController do
     end
 
     it "renders 400 bad_request for bogus categories" do
+      mock_login(user)
       INVALID_CATEGORIES.each do |category|
         invalid_work = { work: { title: "Invalid Work", category: category } }
 
@@ -97,12 +107,14 @@ describe WorksController do
 
   describe "show" do
     it "succeeds for an extant work ID" do
+      mock_login(user)
       get work_path(existing_work.id)
 
       must_respond_with :success
     end
 
     it "renders 404 not_found for a bogus work ID" do
+      mock_login(user)
       destroyed_id = existing_work.id
       existing_work.destroy
 
@@ -114,12 +126,14 @@ describe WorksController do
 
   describe "edit" do
     it "succeeds for an extant work ID" do
+      mock_login(user)
       get edit_work_path(existing_work.id)
 
       must_respond_with :success
     end
 
     it "renders 404 not_found for a bogus work ID" do
+      mock_login(user)
       bogus_id = existing_work.id
       existing_work.destroy
 
@@ -131,6 +145,7 @@ describe WorksController do
 
   describe "update" do
     it "succeeds for valid data and an extant work ID" do
+      mock_login(user)
       updates = { work: { title: "Dirty Computer" } }
 
       expect {
@@ -144,6 +159,7 @@ describe WorksController do
     end
 
     it "renders bad_request for bogus data" do
+      mock_login(user)
       updates = { work: { title: nil } }
 
       expect {
@@ -156,6 +172,7 @@ describe WorksController do
     end
 
     it "renders 404 not_found for a bogus work ID" do
+      mock_login(user)
       bogus_id = existing_work.id
       existing_work.destroy
 
@@ -167,6 +184,7 @@ describe WorksController do
 
   describe "destroy" do
     it "succeeds for an extant work ID" do
+      mock_login(user)
       expect {
         delete work_path(existing_work.id)
       }.must_change "Work.count", -1
@@ -176,6 +194,7 @@ describe WorksController do
     end
 
     it "renders 404 not_found and does not update the DB for a bogus work ID" do
+      mock_login(user)
       bogus_id = existing_work.id
       existing_work.destroy
 
@@ -189,19 +208,70 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
-    end
+      mock_login(user)
+      work = Work.first
+      vote_count = work.votes.length 
+      post upvote_path(work.id)
+      (work.votes.length).must_equal vote_count
+      must_redirect_to work_path(work.id)
+    end 
 
-    it "redirects to the work page after the user has logged out" do
-      skip
+    it "redirects to the root page after the user has logged out" do
+      mock_login(user)
+      work = Work.first
+      user = users(:quin)
+      mock_login(user)
+   
+      delete logout_path
+      must_redirect_to root_path
+
+      expect(session[:user_id]).must_equal nil
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      work = Work.last
+      vote_count = work.votes.length
+      user = users(:grace)
+      mock_login(user)
+      
+
+      post upvote_path(work.id)
+      work.reload 
+
+      (Work.last.votes.length).must_equal vote_count + 1
+      must_redirect_to work_path(work.id)
+
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      mock_login(user)
+      work = Work.first
+     
+      post upvote_path(work.id)
+      vote_count = work.votes.length 
+      work.reload 
+     
+
+      (Work.first.votes.length).must_equal vote_count
+      must_redirect_to work_path(work.id)
     end
   end
+
+
+  describe "authentication" do 
+    it "will allow logged in user to view index" do 
+      mock_login(user)
+      get works_path
+      must_respond_with :ok
+    end 
+
+
+    it "will redirect guest to main page" do 
+      get works_path 
+      
+      must_redirect_to root_path
+    end 
+
+
+  end 
 end
