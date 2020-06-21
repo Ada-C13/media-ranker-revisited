@@ -1,6 +1,8 @@
 class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
+  before_action :require_login, only: [:index, :show]
+  before_action :authorize_votes, only: [:upvote]
   before_action :category_from_work, except: [:root, :index, :new, :create]
 
   def root
@@ -61,20 +63,15 @@ class WorksController < ApplicationController
   end
 
   def upvote
-    flash[:status] = :failure
-    if @login_user
-      vote = Vote.new(user: @login_user, work: @work)
-      if vote.save
-        flash[:status] = :success
-        flash[:result_text] = "Successfully upvoted!"
-      else
-        flash[:result_text] = "Could not upvote"
-        flash[:messages] = vote.errors.messages
-      end
+    vote = Vote.new(user: @login_user, work: @work)
+    if vote.save 
+      flash[:status] = :success
+      flash[:result_text] = "Successfully upvoted!"
     else
-      flash[:result_text] = "You must log in to do that"
+      flash[:status] = :failure
+      flash[:result_text] = "Could not upvote"
+      flash[:messages] = vote.errors.messages
     end
-
     # Refresh the page to show either the updated vote count
     # or the error message
     redirect_back fallback_location: work_path(@work)
@@ -90,5 +87,14 @@ class WorksController < ApplicationController
     @work = Work.find_by(id: params[:id])
     render_404 unless @work
     @media_category = @work.category.downcase.pluralize
+  end
+
+  def authorize_votes
+    @work = Work.find_by(id: params[:id])
+    unless @login_user
+      flash[:status] = :failure
+      flash[:result_text] = "Must be logged in as a user to vote."
+      redirect_to work_path(@work)
+    end
   end
 end
