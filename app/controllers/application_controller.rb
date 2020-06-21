@@ -10,10 +10,9 @@ class ApplicationController < ActionController::Base
 
   def require_login
     unless @login_user
-      redirect_to root_path
       flash[:status] = :failure
       flash[:result_text] = "Must be logged in as a user."
-      return
+      redirect_back(fallback_location: root_path)
     end
   end
 
