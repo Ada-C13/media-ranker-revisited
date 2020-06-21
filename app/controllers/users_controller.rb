@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_action :require_login, only: [:logout]
+
   def index
     @users = User.all
   end
@@ -20,17 +22,23 @@ class UsersController < ApplicationController
       if user.save
         flash[:success] = "Logged in as new user #{user.username}"
       else
-        flash[:error] = "Could not create new user account: #{user.errors.messages}"
+        flash[:error] = "Could not create new user account."
         return redirect_to root_path
       end
     end
+
     session[:user_id] = user.id
     return redirect_to root_path
   end
 
   def logout 
-    session[:user_id] = nil
-    flash[:success] = "Successfully logged out!"
-    redirect_to root_path
+    if session[:user_id].nil?
+      flash[:error] = "Can't log out"
+      return redirect_to root_path
+    else 
+      session[:user_id] = nil
+      flash[:success] = "Successfully logged out!"
+      redirect_to root_path
+    end
   end
 end
