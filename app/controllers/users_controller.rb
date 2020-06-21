@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  skip_before_action :require_login, only: [:create]
+
   def index
     @users = User.all
   end
@@ -9,7 +11,9 @@ class UsersController < ApplicationController
   end
 
   def create
+    
     auth_hash = request.env["omniauth.auth"]
+    
     user = User.find_by(uid: auth_hash[:uid], provider: params[:provider])
     if user
       flash[:success] = "Existing user #{user.username} is logged in."

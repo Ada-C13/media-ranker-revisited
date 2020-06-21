@@ -2,9 +2,8 @@ class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
+  skip_before_action :require_login, only: [:root]
 
-  #TODO: figure out the controller filters that needs to be placed here
-  # before_action :find_user
   def root
     @albums = Work.best_albums
     @books = Work.best_books

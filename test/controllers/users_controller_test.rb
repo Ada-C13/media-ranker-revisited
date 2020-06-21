@@ -27,7 +27,7 @@ describe UsersController do
     end
     it "guest users on that route" do
       post logout_path
-      expect(flash[:error]).must_equal "You must be logged in to log out!"
+      expect(flash[:result_text]).must_equal "You must be logged in to view this section"
       must_respond_with :redirect
       must_redirect_to root_path
     end
