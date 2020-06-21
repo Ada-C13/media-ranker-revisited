@@ -2,7 +2,8 @@ class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
-  before_action :require_login, only: [:index,:show, :new, :create, :edit, :update]
+  before_action :require_login, only: [:index, :show, :new, :create, :edit, :update]
+
   def root
     @albums = Work.best_albums
     @books = Work.best_books
@@ -70,7 +71,6 @@ class WorksController < ApplicationController
       else
         flash[:result_text] = "Could not upvote"
         flash[:messages] = vote.errors.messages
-        
       end
     else
       flash[:result_text] = "You must log in to do that"

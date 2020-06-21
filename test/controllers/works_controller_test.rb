@@ -268,6 +268,7 @@ describe WorksController do
 
     it "will redirect guest to main page" do 
       get works_path 
+      
       must_redirect_to root_path
     end 
 
