@@ -11,8 +11,8 @@ Rails.application.routes.draw do
   # post "/login", to: "users#login"
   # post "/logout", to: "users#logout", as: "logout"
 
-  resources :works
   post "/works/:id/upvote", to: "works#upvote", as: "upvote"
+  resources :works
 
   resources :users, only: [:index, :show]
 end
