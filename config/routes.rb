@@ -13,7 +13,4 @@ Rails.application.routes.draw do
   post "/works/:id/upvote", to: "works#upvote", as: "upvote"
   resources :works
 
-
-  # get "/login", to: "users#login_form", as: "login"
-  # post "/login", to: "users#login"
 end

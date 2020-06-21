@@ -33,23 +33,6 @@ describe WorksController do
   CATEGORIES = %w(albums books movies)
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
 
-  describe "index" do
-    it "succeeds when there are works" do
-      get works_path
-
-      must_respond_with :success
-    end
-
-    it "succeeds when there are no works" do
-      Work.all do |work|
-        work.destroy
-      end
-
-      get works_path
-
-      must_respond_with :success
-    end
-  end
 
   describe "new" do
     it "succeeds" do
@@ -95,22 +78,6 @@ describe WorksController do
     end
   end
 
-  describe "show" do
-    it "succeeds for an extant work ID" do
-      get work_path(existing_work.id)
-
-      must_respond_with :success
-    end
-
-    it "renders 404 not_found for a bogus work ID" do
-      destroyed_id = existing_work.id
-      existing_work.destroy
-
-      get work_path(destroyed_id)
-
-      must_respond_with :not_found
-    end
-  end
 
   describe "edit" do
     it "succeeds for an extant work ID" do
@@ -187,50 +154,112 @@ describe WorksController do
     end
   end
 
-  describe "upvote" do
+  describe "Guest Users" do
+    describe "index" do
+      it "redirects to root path and shows an error message" do
+        get works_path
+  
+        must_respond_with :redirect
+        must_redirect_to root_path
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "You must be logged in to view the page"
+      end
+    end
+
+    describe "show" do
+      it "redirects to root path and shows an error message" do
+        get work_path(existing_work.id)
+  
+        must_respond_with :redirect
+        must_redirect_to root_path
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "You must be logged in to view the page"
+      end
+    end
+
+    describe "upvote" do
+      it "redirects to the work page if no user is logged in" do    
+        @poodr = works(:poodr)  
+        expect{
+          post upvote_path(@poodr.id)
+        }.wont_change "Vote.count"
+  
+        must_respond_with :redirect
+        expect(flash[:result_text]).must_equal "You must log in to do that" 
+      end
+    end
+  end
+
+  describe "Logged-in Users" do
     before do
+      perform_login
       @poodr = works(:poodr)
     end
 
-    it "redirects to the work page if no user is logged in" do      
-      expect{
-        post upvote_path(@poodr.id)
-      }.wont_change "Vote.count"
-
-      must_respond_with :redirect
-      expect(flash[:result_text]).must_equal "You must log in to do that" 
+    describe "index" do
+      it "succeeds when there are works" do
+        get works_path
+  
+        must_respond_with :success
+      end
+  
+      it "succeeds when there are no works" do
+        Work.all do |work|
+          work.destroy
+        end
+  
+        get works_path
+  
+        must_respond_with :success
+      end
     end
 
-    it "redirects to the work page after the user has upvoted" do
-      perform_login
-      post upvote_path(@poodr.id)
-
-      must_respond_with :redirect
-      must_redirect_to work_path(@poodr)
+    describe "show" do
+      it "succeeds for an extant work ID" do
+        get work_path(existing_work.id)
+  
+        must_respond_with :success
+      end
+  
+      it "renders 404 not_found for a bogus work ID" do
+        destroyed_id = existing_work.id
+        existing_work.destroy
+  
+        get work_path(destroyed_id)
+  
+        must_respond_with :not_found
+      end
     end
 
-    it "succeeds for a logged-in user and a fresh user-vote pair" do
-      perform_login
-      expect{
+    describe "upvote" do
+      it "redirects to the work page after the user has upvoted" do
         post upvote_path(@poodr.id)
-      }.must_differ "Vote.count", 1
-
-      must_respond_with :redirect
-      expect(flash[:status]).must_equal :success     
-    end
-
-    it "redirects to the work page if the user has already voted for that work" do
-      perform_login
-      expect{
-        post upvote_path(@poodr.id)
-      }.must_differ "Vote.count", 1
-
-      expect{
-        post upvote_path(@poodr.id)
-      }.wont_change "Vote.count"
-
-      must_respond_with :redirect
-      must_redirect_to work_path(@poodr)   
+  
+        must_respond_with :redirect
+        must_redirect_to work_path(@poodr)
+      end
+  
+      it "succeeds for a logged-in user and a fresh user-vote pair" do
+        expect{
+          post upvote_path(@poodr.id)
+        }.must_differ "Vote.count", 1
+  
+        must_respond_with :redirect
+        expect(flash[:status]).must_equal :success     
+      end
+  
+      it "redirects to the work page if the user has already voted for that work" do
+        expect{
+          post upvote_path(@poodr.id)
+        }.must_differ "Vote.count", 1
+  
+        expect{
+          post upvote_path(@poodr.id)
+        }.wont_change "Vote.count"
+  
+        must_respond_with :redirect
+        must_redirect_to work_path(@poodr)   
+      end
     end
   end
 end
