@@ -25,12 +25,12 @@ class UsersController < ApplicationController
         flash.now[:status] = :failure
         flash.now[:result_text] = "Could not log in"
         flash.now[:messages] = user.errors.messages
-        return redirect_to root_path
+        redirect_to root_path
       end
     end
 
     session[:user_id] = user.id
-    return redirect_to root_path
+    redirect_to root_path
   end
 
   def destroy
