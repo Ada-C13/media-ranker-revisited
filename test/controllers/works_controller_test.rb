@@ -190,18 +190,32 @@ describe WorksController do
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
       skip
+      # mock login with helper method in test_helper
+      # attempt to upvote a fixture work
+      # expect vote count not to change?
+      # expect redirect to work page; redirect_back fallback_location: work_path(@work)
     end
 
     it "redirects to the work page after the user has logged out" do
       skip
+      # mock login
+      # logout/ set user to nil
+      # expect vote count not to change?
+      # expect redirect
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
       skip
+      # mock login
+      # expect vote count to change by 1
+      # expect redirect?
     end
 
     it "redirects to the work page if the user has already voted for that work" do
       skip
+      # mock login
+      # expect vote count not to change?
+      # expect redirect
     end
   end
 end
