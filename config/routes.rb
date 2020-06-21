@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   #path for auth
   get "/auth/github", as: "github_login"
-  get "/auth/:provider/callback", to: "users#create"
+  get "/auth/:provider/callback", to: "users#create", as: "auth_callback"
   put "/logout", to: "users#logout", as: "logout"
 
 end
