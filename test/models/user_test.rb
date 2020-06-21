@@ -42,4 +42,47 @@ describe User do
       expect(user3.valid?).must_equal true
     end
   end
+
+  describe "build_from_github" do
+    it "stores a new User instance that has attributes: username, email, provider, and uid" do
+      test_hash = {
+        "provider" => "github-test",
+        "uid" => 520,
+        "info" => {
+          "email" => "test@test.org",
+          "nickname" => "testtt",
+        },
+      }
+
+      result_user = User.build_from_github(test_hash)
+      expect(result_user).must_be_instance_of User
+      expect(result_user.valid?).must_equal true
+
+      expect(result_user.id).must_be_nil  # the User is not saved to db in this method   
+      expect(result_user).must_respond_to :username
+      expect(result_user).must_respond_to :email
+      expect(result_user).must_respond_to :provider
+      expect(result_user).must_respond_to :uid
+    end
+
+    it "stores a new User instance with incomplete attributes if given insufficient data" do
+      test_hash = {
+        "provider" => "github-test",
+        "uid" => 520,
+        "info" => {
+          "email" => "test@test.org",
+          "nickname" => nil,
+        },
+      }
+
+      result_user = User.build_from_github(test_hash)
+      expect(result_user).must_be_instance_of User
+      expect(result_user.valid?).must_equal false
+      
+      expect(result_user).must_respond_to :username
+      expect(result_user).must_respond_to :email
+      expect(result_user).must_respond_to :provider
+      expect(result_user).must_respond_to :uid
+    end
+  end
 end
