@@ -39,4 +39,29 @@ describe User do
       expect(user2.errors.messages).must_include :username
     end
   end
+
+  describe 'build_from_github' do
+    it 'creates new user' do
+      auth_hash = {
+        provider: "github",
+        uid: 1115 ,
+        "info" => {
+          "email" => "merchant@email.com",
+          "nickname" => "Hollerin Harriet",
+          "image" => "http://image.com"
+        }
+      }
+
+      user = User.build_from_github(auth_hash)
+      user.save!
+
+      expect(User.count).must_equal 5
+
+      # expect(user.provider).must_equal "github"
+      # expect(user.uid).must_equal auth_hash[:uid]
+      expect(user.username).must_equal auth_hash["info"]["nickname"]
+      expect(user.email).must_equal auth_hash["info"]["email"]
+      expect(user.avatar).must_equal auth_hash["info"]["image"]
+    end
+  end
 end
