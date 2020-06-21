@@ -226,6 +226,87 @@ describe WorksController do
   end
 
   describe 'guest user' do
+    describe "index" do
+      it "cannot access index page" do
+        get works_path
+    
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "Sorry! You must be logged in to do that!"
+        must_respond_with :redirect
+      end
+
+    end
+
+    describe "new" do
+      it "succeeds" do
+        get new_work_path
+
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "Sorry! You must be logged in to do that!"
+        must_respond_with :redirect
+      end
+    end
+
+    describe "create" do
+      it "cannot create a work with valid data for a real category" do
+        new_work = { work: { title: "Dirty Computer", category: "album" } }
+
+        expect {
+          post works_path, params: new_work
+        }.wont_change "Work.count"
+
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "Sorry! You must be logged in to do that!"
+        must_respond_with :redirect
+      end
+    end
+
+    describe "show" do
+      it "succeeds for an extant work ID" do
+        get work_path(existing_work.id)
+
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "Sorry! You must be logged in to do that!"
+        must_respond_with :redirect
+      end
+    end
+
+    describe "edit" do
+      it "succeeds for an extant work ID" do
+        get edit_work_path(existing_work.id)
+
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "Sorry! You must be logged in to do that!"
+        must_respond_with :redirect
+      end
+    end
+
+    describe "update" do
+      it "cannot update for valid data and an extant work ID" do
+        updates = { work: { title: "Dirty Computer" } }
+
+        expect {
+          put work_path(existing_work), params: updates
+        }.wont_change "Work.count"
+        
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "Sorry! You must be logged in to do that!"
+        must_respond_with :redirect
+      end
+    end
+
+    describe "destroy" do
+      it "cannot delete any works" do
+        expect {
+          delete work_path(existing_work.id)
+        }.wont_change "Work.count"
+
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "Sorry! You must be logged in to do that!"
+        must_respond_with :redirect
+      end
+    end
+
     describe "upvote" do
       it "redirects to the work page if no user is logged in" do
         work = works(:album)
