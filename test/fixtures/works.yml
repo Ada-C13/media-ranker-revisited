@@ -24,3 +24,10 @@ poodr:
 movie:
   title: test movie - has only required fields
   category: movie
+
+yet_another_album:
+  title: Yet Antoher One
+  creator: Picchu Cakes
+  description: Jazzy doggo tunes
+  publication_year: 1955-11-01
+  category: album
