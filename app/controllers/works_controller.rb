@@ -30,7 +30,7 @@ class WorksController < ApplicationController
       flash[:status] = :failure
       flash[:result_text] = "Could not create #{@media_category.singularize}"
       flash[:messages] = @work.errors.messages
-      render :new, status: :bad_request
+      render :new, status: :not_found
     end
   end
 
@@ -75,9 +75,7 @@ class WorksController < ApplicationController
     else
       flash[:result_text] = "You must log in to do that"
     end
-
-    # Refresh the page to show either the updated vote count
-    # or the error message
+    
     redirect_back fallback_location: work_path(@work)
   end
 
