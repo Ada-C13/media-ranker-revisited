@@ -30,6 +30,16 @@ describe UsersController do
       # The new user's ID should be set in the session
       expect(session[:user_id]).must_equal User.last.id
     end
+
+    it "does not create new user with invalid info" do
+      user = User.new(provider: "bitbub", uid: 111, username: nil, email: "test@user.com")
+      perform_login(user)
+
+      expect(user.valid?).must_equal false
+      expect(flash[:error]).must_include "Could not create new user account:"
+
+      must_redirect_to root_path
+    end
   end  
 
   describe "logout" do
