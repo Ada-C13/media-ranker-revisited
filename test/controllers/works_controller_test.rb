@@ -189,19 +189,54 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
+      # Arrange
+      # Act
+      post upvote_path(existing_work.id)
+      # # Assert
+      expect(flash[:status]).must_equal :failure
+      expect(flash[:result_text]).must_equal "You must log in to do that"
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+      # Arrange
+      user = perform_login(users(:dan))
+      expect(session[:user_id]).wont_be_nil
+      post logout_path, params: {} # perform logout
+      # Act
+      post upvote_path(existing_work.id)
+      # # Assert
+      expect(flash[:status]).must_equal :failure
+      expect(flash[:result_text]).must_equal "You must log in to do that"
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      # Arrange
+      user = perform_login(users(:dan))
+      expect(session[:user_id]).wont_be_nil
+      work = works(:poodr)
+      # Act
+      post upvote_path(work.id)
+      # # Assert
+      expect(flash[:status]).must_equal :success
+      expect(flash[:result_text]).must_equal "Successfully upvoted!"
+      expect()
+      must_redirect_to work_path(work.id)
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      # Arrange
+      user = perform_login(users(:dan))
+      expect(session[:user_id]).wont_be_nil
+      # Act
+      vote = Vote.new(user: user, work: existing_work)
+      post upvote_path(existing_work.id)
+      # # Assert
+      expect(vote.valid?).must_equal false
+      expect(vote.errors.messages).must_include :user
+      expect(flash[:result_text]).must_equal "Could not upvote"
+      must_redirect_to work_path(existing_work.id)
     end
   end
 end
