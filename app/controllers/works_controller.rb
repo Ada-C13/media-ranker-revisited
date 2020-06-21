@@ -2,6 +2,7 @@ class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
+  before_action :require_login, only: [:index, :show]
 
   def root
     @albums = Work.best_albums
@@ -41,7 +42,8 @@ class WorksController < ApplicationController
   end
 
   def update
-    if @work.update(media_params)
+    @work.update(media_params)
+    if @work.save
       flash[:status] = :success
       flash[:result_text] = "Successfully updated #{@media_category.singularize} #{@work.id}"
       redirect_to work_path(@work)
