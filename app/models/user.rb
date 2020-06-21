@@ -2,7 +2,10 @@ class User < ApplicationRecord
   has_many :votes
   has_many :ranked_works, through: :votes, source: :work
 
-  validates :username, uniqueness: true, presence: true
+  validates :username, presence: true
+  validates :email, presence: true
+  validates :provider, presence: true
+  validates :uid, presence: true
   validates :uid, uniqueness: { scope: :provider }
 
   def self.build_from_github(auth_hash)
