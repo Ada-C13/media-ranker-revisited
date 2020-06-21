@@ -20,23 +20,26 @@ describe User do
   end
 
   describe "validations" do
-    it "requires a username" do
+    it "requires a provider, a uid, a username, and an email" do
       user = User.new
       expect(user.valid?).must_equal false
       expect(user.errors.messages).must_include :username
+      expect(user.errors.messages).must_include :email
+      expect(user.errors.messages).must_include :provider
+      expect(user.errors.messages).must_include :uid
     end
 
-    it "requires a unique username" do
-      username = "test username"
-      user1 = User.new(username: username)
-
+    it "requires a unique UID within the same provider" do
+      user1 = User.new(provider: "github-test", uid: "777999", username: "goblin", email: "goblin@goblins.net")
       # This must go through, so we use create!
       user1.save!
 
-      user2 = User.new(username: username)
-      result = user2.save
-      expect(result).must_equal false
-      expect(user2.errors.messages).must_include :username
+      user2 = User.new(provider: "github-test", uid: "777999", username: "goblin", email: "goblin@goblins.net")
+      expect(user2.valid?).must_equal false
+      expect(user2.errors.messages).must_include :uid
+
+      user3 = User.new(provider: "google-test", uid: "777999", username: "goblin", email: "goblin@goblins.net")
+      expect(user3.valid?).must_equal true
     end
   end
 end
