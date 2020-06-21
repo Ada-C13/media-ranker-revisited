@@ -190,22 +190,51 @@ describe WorksController do
         must_respond_with :not_found
       end
     end
+
+    describe "upvote" do
+      it "succeeds for a logged-in user and a fresh user-vote pair" do
+        work = works(:album)
+
+        expect{ post upvote_path(work.id) }.must_differ "Vote.count" , 1
+        expect(flash[:status]).must_equal :success
+        expect(flash[:result_text]).must_equal "Successfully upvoted!"
+        must_respond_with :redirect
+      end
+  
+      it "redirects to the work page if the user has already voted for that work" do
+        work = works(:movie)
+
+        expect{ post upvote_path(work.id) }.wont_change "Vote.count"
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "Could not upvote"
+        must_respond_with :redirect
+      end
+
+      it "redirects to the work page after the user has logged out" do
+        work = works(:poodr)
+
+        expect{ post upvote_path(work.id) }.must_differ "Vote.count" , 1
+        expect(flash[:status]).must_equal :success
+        expect(flash[:result_text]).must_equal "Successfully upvoted!"
+        must_respond_with :redirect
+
+        post logout_path
+
+        must_respond_with :redirect
+      end
+    end
   end
-  describe "upvote" do
-    it "redirects to the work page if no user is logged in" do
-      skip
-    end
 
-    it "redirects to the work page after the user has logged out" do
-      skip
-    end
+  describe 'guest user' do
+    describe "upvote" do
+      it "redirects to the work page if no user is logged in" do
+        work = works(:album)
 
-    it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
-    end
-
-    it "redirects to the work page if the user has already voted for that work" do
-      skip
+        expect{ post upvote_path(work.id) }.wont_change "Vote.count"
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "Sorry! You must be logged in to do that!"
+        must_respond_with :redirect
+      end
     end
   end
 end
