@@ -25,9 +25,7 @@ describe UsersController do
     end
 
     it "renders 404 when retrieving a page for a nonexistent user" do
-      destroyed_user = existing_user
-      existing_user.destroy
-      get user_path(destroyed_user.id)
+      get user_path("fake_id")
       must_respond_with :not_found
     end
   end
@@ -47,7 +45,7 @@ describe UsersController do
         new_user = perform_login(new_user)
       }.must_change "User.count", 1
 
-      expect(flash[:success]).must_equal "Logged in as new user #{new_user.username}"
+      expect(flash[:result_text]).must_equal "Logged in as new user #{new_user.username}"
       must_redirect_to root_path
       session[:user_id].must_equal new_user.id
     end
@@ -70,7 +68,7 @@ describe UsersController do
 
       perform_login(invalid_user)
       invalid_user.valid?
-      expect(flash[:error]).must_equal "Could not create new user account."
+      expect(flash[:result_text]).must_equal "Could not create new user account."
     end
   end
 
@@ -81,6 +79,7 @@ describe UsersController do
 
       post logout_user_url(session[:user_id])
       expect(session[:user_id]).must_be_nil
+      expect(flash[:result_text]).must_equal "Successfully logged out!"
 
       must_redirect_to root_path
     end

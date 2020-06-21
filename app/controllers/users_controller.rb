@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-  before_action :require_login, only: [:logout]
 
   def index
     @users = User.all
@@ -16,13 +15,16 @@ class UsersController < ApplicationController
     user = User.find_by(uid: auth_hash[:uid], provider: "github")
 
     if user 
-      flash[:success] = "Logged in as returning user #{user.username}"
+      flash[:status] = :success
+      flash[:result_text] = "Logged in as returning user #{user.username}"
     else 
       user = User.build_from_github(auth_hash)
       if user.save
-        flash[:success] = "Logged in as new user #{user.username}"
+        flash[:status] = :success
+        flash[:result_text] = "Logged in as new user #{user.username}"
       else
-        flash[:error] = "Could not create new user account."
+        flash[:status] = :error
+        flash[:result_text] = "Could not create new user account."
         return redirect_to root_path
       end
     end
@@ -33,11 +35,13 @@ class UsersController < ApplicationController
 
   def logout 
     if session[:user_id].nil?
-      flash[:error] = "Can't log out"
+      flash[:status] = :error
+      flash[:result_text] = "Can't log out"
       return redirect_to root_path
     else 
       session[:user_id] = nil
-      flash[:success] = "Successfully logged out!"
+      flash[:status] = :success
+      flash[:result_text] = "Successfully logged out!"
       redirect_to root_path
     end
   end
