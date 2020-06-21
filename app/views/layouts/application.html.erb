@@ -32,19 +32,24 @@
           <%= link_to "View all users", users_path, class: "nav-link" %>
         </li>
       </ul>
+      
       <ul class="nav app-header__user-nav-container">
-        <% if @login_user.nil? %>
-        <li class="nav-item app-header__nav_item">
-          <%= link_to "Log In", github_login_path, class: "btn btn-primary" %>
+        <% if @login_user %>
+        <li>
+          <%=image_tag @login_user.avatar, alt: "User's github image", class: 'avatar'%>
         </li>
-        <% else %>
         <li class="nav-item app-header__nav_item">
           <%= link_to "Logged in as #{@login_user.username}", user_path(@login_user), class: "btn btn-primary" %>
         </li>
         <li class="nav-item app-header__nav_item">
           <%= link_to "Log Out", logout_path, method: :post, class: "btn btn-primary" %>
         </li>
+        <% else %>
+        <li class="nav-item app-header__nav_item">
+          <%= link_to "Login with GitHub", github_login_path, class: "btn btn-primary" %>
+        </li>
         <% end %>
+
       </ul>
     </nav>
   </header>
