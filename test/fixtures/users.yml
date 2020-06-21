@@ -5,11 +5,11 @@ ada:
   provider: github
   uid: 12345
   email: dan@adadev.org 
-  avatar: image_url
+  avatar: https://avatars3.githubusercontent.com/u/43390011?v=4
 
 lovelace:
   username: lovelace
   provider: github
   uid: 6789
   email: kari@adadev.org 
-  avatar: image_url
+  avatar: https://avatars3.githubusercontent.com/u/43390011?v=4
