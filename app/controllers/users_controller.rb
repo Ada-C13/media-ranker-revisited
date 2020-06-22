@@ -32,9 +32,13 @@ class UsersController < ApplicationController
   end
 
   def logout
-    session[:user_id] = nil
-    flash[:status] = :success
-    flash[:result_text] = "Successfully logged out"
-    redirect_to root_path
+    if @login_user
+      session[:user_id] = nil
+      flash[:status] = :success
+      flash[:result_text] = "Successfully logged out"
+      redirect_to root_path
+    else
+      render :internal_server_error
+    end
   end
 end
