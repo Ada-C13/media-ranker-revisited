@@ -38,6 +38,18 @@ describe User do
       expect(result).must_equal false
       expect(user2.errors.messages).must_include :username
     end
+
+    it 'requires a unique uid' do
+      username = "test username"
+      user1 = User.new(username: username, uid: 12345)
+      
+      user1.save!
+
+      user2 = User.new(username: username, uid: 12345)
+      result = user2.save
+      expect(result).must_equal false
+      expect(user2.errors.messages).must_include :uid
+    end
   end
 
   describe "custom methods" do 

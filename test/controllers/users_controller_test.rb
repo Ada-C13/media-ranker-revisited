@@ -55,7 +55,6 @@ describe UsersController do
     end
 
     it "guest users won't be able to log out without logged in " do
-      # expect(session[:user_id]).must_be_nil
 
       post logout_path
       
