@@ -46,4 +46,16 @@ describe UsersController do
       must_respond_with :redirect
     end
   end
+
+  describe "destroy" do
+    it "can logout an existing user" do
+      perform_login
+      expect(session[:user_id]).wont_be_nil
+      
+      expect {
+        delete logout_path, params: {}
+      }.wont_differ "User.count"
+      expect(session[:user_id]).must_be_nil
+    end
+  end
 end
