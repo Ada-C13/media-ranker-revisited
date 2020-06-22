@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-
+  before_action :require_login, except: [:create]
   def create
     auth_hash = request.env["omniauth.auth"]
 
@@ -49,7 +49,7 @@ class UsersController < ApplicationController
       end
     else
       flash[:status] = :failure
-      flash[:result_text] = "You must be logged in before to logout!"
+      flash[:result_text] = "Sorry! You must be logged in to do that!"
     end
     redirect_to root_path
   end
