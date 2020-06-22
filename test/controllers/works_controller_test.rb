@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/skip_dsl"
 
 describe WorksController do
   let(:existing_work) { works(:album) }
@@ -66,10 +67,8 @@ describe WorksController do
     describe "create" do
       it "creates a work with valid data for a real category" do
         new_work = { work: { title: "Dirty Computer", category: "album" } }
-        puts "WORK COUNT #{Work.count}"
         expect {
           post works_path, params: new_work
-          puts "WORK COUNT #{Work.count}"
         }.must_change "Work.count", 1
   
         new_work_id = Work.find_by(title: "Dirty Computer").id
@@ -193,23 +192,169 @@ describe WorksController do
   
     describe "upvote" do
       it "redirects to the work page if no user is logged in" do
-        
+        post logout_path
+        expect {
+          post upvote_path(existing_work.id)
+        }.wont_change "Vote.count"
+        must_respond_with :redirect
+        must_redirect_to root_path
       end
   
       it "redirects to the work page after the user has logged out" do
-        
+        new_work = Work.new(title: "Dictionary", category: "book")
+        new_work.save!
+        get work_path(new_work.id)
+        expect {
+          post upvote_path(new_work.id)
+        }.must_change "Vote.count", 1
+        post logout_path
+        must_redirect_to root_path
       end
   
       it "succeeds for a logged-in user and a fresh user-vote pair" do
-        
+        new_work = Work.new(title: "Dictionary", category: "book")
+        new_work.save!
+        expect {
+          post upvote_path(new_work)
+        }.must_change "Vote.count", 1
+        expect(flash[:result_text]).must_equal "Successfully upvoted!"
       end
   
       it "redirects to the work page if the user has already voted for that work" do
-        
+        existing_work
+        expect {
+          post upvote_path(existing_work)
+        }.wont_change "Vote.count"
+        must_redirect_to work_path(existing_work.id)
       end
     end  
   end
-  describe "guest users" do
 
+  describe "guest users" do
+    describe "root" do
+      it "succeeds with all media types" do
+        get root_path
+  
+        must_respond_with :success
+      end
+  
+      it "succeeds with one media type absent" do
+        only_book = works(:poodr)
+        only_book.destroy
+  
+        get root_path
+  
+        must_respond_with :success
+      end
+  
+      it "succeeds with no media" do
+        Work.all do |work|
+          work.destroy
+        end
+  
+        get root_path
+  
+        must_respond_with :success
+      end
+    end
+    
+    describe "index" do
+      it "must redirect if trying to get work index page" do
+        get works_path
+  
+        must_redirect_to root_path
+      end
+    end
+
+    describe "new" do
+      it "must redirect if trying to get work new page" do
+        get new_work_path
+  
+        must_redirect_to root_path
+      end
+    end
+  
+    describe "create" do
+      it "must redirect if trying to get work create page" do
+        new_work = { work: { title: "Dirty Computer", category: "album" } }
+        post works_path, params: new_work
+  
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
+  
+    describe "show" do
+      it "must redirect if trying to get work show page" do
+        existing_work
+        get work_path(existing_work.id)
+  
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
+  
+    describe "edit" do
+      it "must redirect if trying to get work edit page" do
+        existing_work
+        get edit_work_path(existing_work.id)
+        
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
+  
+    describe "update" do
+      it "must redirect if trying to update work" do
+        updates = { work: { title: "Dirty Computer" } }
+  
+        expect {
+          put work_path(existing_work), params: updates
+        }.wont_change "Work.count"
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
+  
+    describe "destroy" do
+      it "must redirect if trying to destroy work" do
+        expect {
+          delete work_path(existing_work.id)
+        }.wont_change "Work.count"
+  
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+    end
+  
+    describe "upvote" do
+      it "redirects to the work page if no user is logged in" do
+        post logout_path
+        must_respond_with :redirect
+        must_redirect_to root_path
+      end
+  
+    #   it "redirects to the work page after the user has logged out" do
+    #     post logout_path
+    #     must_redirect_to root_path
+    #   end
+  
+    #   it "succeeds for a logged-in user and a fresh user-vote pair" do
+    #     new_work = Work.new(title: "Dictionary", category: "book")
+    #     new_work.save!
+    #     expect {
+    #       post upvote_path(new_work)
+    #     }.must_change "Vote.count", 1
+    #     expect(flash[:result_text]).must_equal "Successfully upvoted!"
+    #   end
+  
+    #   it "redirects to the work page if the user has already voted for that work" do
+    #     existing_work
+    #     expect {
+    #       post upvote_path(existing_work)
+    #     }.wont_change "Vote.count"
+    #     must_redirect_to work_path(existing_work.id)
+    #   end
+    end  
   end
 end

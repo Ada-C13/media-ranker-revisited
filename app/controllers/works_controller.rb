@@ -20,20 +20,9 @@ class WorksController < ApplicationController
   end
 
   def create
-    puts "CREATE WORK"
-    begin
-      @work = Work.new(media_params)
-    puts "CREATE WORK CREATED"
-      
-      @media_category = @work.category
-
-    rescue => e
-      puts "EXCEPTIOn"
-      puts e.message
-      puts e.backtrace.join("\n")
-    end
+    @work = Work.new(media_params)
+    @media_category = @work.category
     if @work.save
-      puts "WORK SAVED"
       flash[:status] = :success
       flash[:result_text] = "Successfully created #{@media_category.singularize} #{@work.id}"
       redirect_to work_path(@work)

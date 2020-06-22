@@ -3,6 +3,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require "rails/test_help"
 require "minitest/rails"
 require "minitest/skip_dsl"
+require 'minitest/spec'
 require "minitest/reporters"  # for Colorized output
 
 #  For colorful output!
@@ -37,14 +38,11 @@ class ActiveSupport::TestCase
         nickname: user.username
       }
     }
-    puts "mock_auth_hash #{auth_hash.inspect}"
     return auth_hash
   end
 
   def perform_login(user = nil)
     user ||= User.first
-    p "perform_login"
-    p "first user #{user}"
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
     
     get auth_callback_path(:github)
