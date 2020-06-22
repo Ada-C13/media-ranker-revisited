@@ -188,20 +188,50 @@ describe WorksController do
   end
 
   describe "upvote" do
+    before do
+      @work = works(:poodr)
+    end
+
     it "redirects to the work page if no user is logged in" do
-      skip
+      post upvote_path(@work)
+      assert_equal "You must log in to do that", flash[:result_text]
+      must_redirect_to work_path(@work)
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+      # not sure how test description differs from above??
+      post upvote_path(@work)
+      assert_equal "You must log in to do that", flash[:result_text]
+      must_redirect_to work_path(@work)
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      perform_login(users(:kari))
+
+      expect {
+        post upvote_path(@work)
+      }.must_differ "Vote.count", 1
+
+      assert_equal "Successfully upvoted!", flash[:result_text]
+      must_redirect_to work_path(@work)
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      perform_login(users(:kari))
+
+      expect {
+        post upvote_path(@work)
+      }.must_differ "Vote.count", 1
+
+      assert_equal "Successfully upvoted!", flash[:result_text]
+
+      # try to vote twice for the same work
+      expect {
+        post upvote_path(@work)
+      }.wont_change "Vote.count"
+
+      assert_equal "Could not upvote", flash[:result_text]
+      must_redirect_to work_path(@work)
     end
   end
 end
