@@ -5,6 +5,7 @@ describe UsersController do
     it "can login an existing user" do
       user = perform_login(users(:dan))
 
+      assert_equal "Logged in as existing user #{user.username}.", flash[:result_text]
       must_redirect_to root_path
     end
 
@@ -20,6 +21,7 @@ describe UsersController do
         user = perform_login(new_user)
       }.must_change "User.count", 1
 
+      assert_equal "Logged in as new user #{new_user.username}.", flash[:result_text]
       must_redirect_to root_path
     end
   end
@@ -30,6 +32,7 @@ describe UsersController do
       expect(session[:user_id]).wont_be_nil
 
       post logout_path, params: {}
+      assert_equal "Successfully logged out", flash[:result_text]
       expect(session[:user_id]).must_be_nil
       must_redirect_to root_path
     end
