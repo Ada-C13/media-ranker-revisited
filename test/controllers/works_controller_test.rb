@@ -143,7 +143,7 @@ describe WorksController do
         must_respond_with :success
       end
 
-      it "succeeds for an extant work ID (moviecategory)" do
+      it "succeeds for an extant work ID (movie category)" do
         expect(session[:user_id]).wont_be_nil
         
         get work_path(movie.id)
@@ -237,19 +237,16 @@ describe WorksController do
     end
   
     describe "upvote" do
-      let(:work_params) {
-        works(:parasite)
-      }
+      before do 
+        current_user = users(:lovelace)
+        perform_login(current_user)
+      end
   
       it "succeeds for a logged-in user and a fresh user-vote pair" do
-        current_user = users(:lovelace)
-  
-        perform_login(current_user)
-  
         expect(session[:user_id]).wont_be_nil
   
         expect {
-          post upvote_path(work_params)
+          post upvote_path(movie)
         }.must_change "Vote.count", 1
         
         expect(flash["status"]).must_equal :success
@@ -258,10 +255,6 @@ describe WorksController do
 
 
       it "redirects to the work page after the user has logged out" do
-        current_user = users(:lovelace)
-  
-        perform_login(current_user)
-  
         expect(session[:user_id]).wont_be_nil
   
         delete logout_path
@@ -269,7 +262,7 @@ describe WorksController do
         expect(session[:user_id]).must_be_nil
   
         expect {
-          post upvote_path(work_params)
+          post upvote_path(movie)
         }.wont_change "Vote.count"
   
         expect(flash["status"]).must_equal :failure 
@@ -280,23 +273,18 @@ describe WorksController do
   
 
       it "redirects to the work page if the user has already voted for that work" do
-        current_user = users(:lovelace)
-  
-        perform_login(current_user)
-  
         expect(session[:user_id]).wont_be_nil
-        post upvote_path(work_params)
+        post upvote_path(movie)
   
         expect {
-          post upvote_path(work_params)
+          post upvote_path(movie)
         }.wont_change "Vote.count"
   
-        must_redirect_to work_path(work_params)
+        must_redirect_to work_path(movie)
   
         expect(flash["status"]).must_equal :failure
         expect(flash["result_text"]).must_include "Could not upvote"
         expect(flash["messages"][:user]).must_include "has already voted for this work"
-        
       end
     end
   end
