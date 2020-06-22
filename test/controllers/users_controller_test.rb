@@ -64,12 +64,15 @@ describe UsersController do
     end
 
     # TODO
-    # it "guest users on the route" do 
+    it "cannot logout as guest user" do 
       
-    #   delete logout_path
+      delete logout_path
 
-    #   expect(session[:user_id]).must_be_nil 
-    #   must_redirect_to root_path
-    # end
+      expect(flash[:status]).must_equal :failure 
+      expect(flash[:result_text]).must_equal "You must log in to do that"
+
+      expect(session[:user_id]).must_be_nil 
+      must_redirect_to root_path
+    end
   end
 end
