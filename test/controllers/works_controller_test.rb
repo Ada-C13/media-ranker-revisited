@@ -28,6 +28,19 @@ describe WorksController do
 
       must_respond_with :success
     end
+
+    it "succeeds when not logged in" do
+      get root_path
+
+      must_respond_with :success
+    end
+
+    it "succeeds when logged in" do
+      perform_login
+
+      get root_path
+      must_respond_with :success
+    end
   end
 
   CATEGORIES = %w(albums books movies)
@@ -47,6 +60,20 @@ describe WorksController do
 
       get works_path
 
+      must_respond_with :success
+    end
+
+    it "redirects to the main page with an error message if not logged in" do
+      get works_path
+
+      assert_equal "You must be logged in to do that", flash[:result_text]
+      must_redirect_to root_path
+    end
+
+    it "succeeds when logged in" do
+      perform_login
+
+      get works_path
       must_respond_with :success
     end
   end
@@ -96,20 +123,28 @@ describe WorksController do
   end
 
   describe "show" do
-    it "succeeds for an extant work ID" do
+    it "redirects to the main page with an error message if not logged in" do
       get work_path(existing_work.id)
+      
+      assert_equal "You must be logged in to do that", flash[:result_text]
+        must_redirect_to root_path
+      end
+      
+      it "succeeds when logged in" do
+        perform_login
+        
+        get work_path(existing_work.id)
+        must_respond_with :success
+      end
 
-      must_respond_with :success
-    end
-
-    it "renders 404 not_found for a bogus work ID" do
-      destroyed_id = existing_work.id
-      existing_work.destroy
-
-      get work_path(destroyed_id)
-
-      must_respond_with :not_found
-    end
+      it "renders 404 not_found for a bogus work ID" do
+        destroyed_id = existing_work.id
+        existing_work.destroy
+  
+        get work_path(destroyed_id)
+  
+        must_respond_with :not_found
+      end
   end
 
   describe "edit" do
