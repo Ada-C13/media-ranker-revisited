@@ -1,5 +1,7 @@
 class User < ApplicationRecord
   has_many :votes
+  has_many :works, dependent: :nullify
+  #(so its foreign key field referencing the agent can be null)
   has_many :ranked_works, through: :votes, source: :work
 
   validates :username, uniqueness: true, presence: true
