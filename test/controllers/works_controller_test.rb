@@ -223,7 +223,16 @@ describe WorksController do
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      vote_hash[:vote][:user] = perform_login
+
+      expect {
+        post upvote_path(existing_work), params: vote_hash
+      }.must_differ "Vote.count", 1
+
+      expect(flash[:status]).must_equal :success
+      expect(flash[:result_text]).must_equal "Successfully upvoted!"
+
+      must_redirect_to work_path(existing_work)
     end
 
     it "redirects to the work page if the user has already voted for that work" do
