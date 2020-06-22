@@ -117,10 +117,18 @@ describe WorksController do
     end
 
     describe "edit" do
-      it "succeeds for an extant work ID" do
+      it "succeeds for an extant work ID and the login user has the ownership of the work" do
         get edit_work_path(existing_work.id)
 
         must_respond_with :success
+      end
+
+      it "will redirect if login user doesn't have the ownership of the work" do
+        get edit_work_path(works(:movie))
+
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "You are not authorized to modify this work!"
+        must_respond_with :redirect
       end
 
       it "renders 404 not_found for a bogus work ID" do
@@ -134,7 +142,7 @@ describe WorksController do
     end
 
     describe "update" do
-      it "succeeds for valid data and an extant work ID" do
+      it "succeeds for valid data and an extant work ID and the login user has the ownership of the work" do
         updates = { work: { title: "Dirty Computer" } }
 
         expect {
@@ -147,7 +155,22 @@ describe WorksController do
         must_redirect_to work_path(existing_work.id)
       end
 
-      it "renders bad_request for bogus data" do
+      it "will redirect if login user doesn't have the ownership of the work" do
+        updates = { work: { title: "Dirty Computer" } }
+
+        expect {
+          put work_path(works(:movie)), params: updates
+        }.wont_change "Work.count"
+        not_updated_work = Work.find_by(id: works(:movie).id)
+        not_updated_work.reload
+
+        expect(not_updated_work.title).must_equal "test movie - has only required fields"
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "You are not authorized to modify this work!"
+        must_respond_with :redirect
+      end
+
+      it "renders bad_request for bogus data and the login user has the ownership of the work" do
         updates = { work: { title: nil } }
 
         expect {
@@ -170,7 +193,7 @@ describe WorksController do
     end
 
     describe "destroy" do
-      it "succeeds for an extant work ID" do
+      it "succeeds for an extant work ID and the login user has the ownership of the work" do
         expect {
           delete work_path(existing_work.id)
         }.must_change "Work.count", -1
@@ -179,7 +202,17 @@ describe WorksController do
         must_redirect_to root_path
       end
 
-      it "renders 404 not_found and does not update the DB for a bogus work ID" do
+      it "will redirect if login user doesn't have the ownership of the work" do
+        expect {
+          delete work_path(works(:movie).id)
+        }.wont_change "Work.count"
+
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal "You are not authorized to modify this work!"
+        must_respond_with :redirect
+      end
+
+      it "renders 404 not_found and does not update the DB for a bogus work ID and the login user has the ownership of the work" do
         bogus_id = existing_work.id
         existing_work.destroy
 

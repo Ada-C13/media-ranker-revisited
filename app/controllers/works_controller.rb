@@ -99,7 +99,7 @@ class WorksController < ApplicationController
   def verify_work_owner
     if @work.verify_owner(@login_user) == false
       flash[:status] = :failure
-      flash[:result_text] = "You are not authorized to edit this work!"
+      flash[:result_text] = "You are not authorized to modify this work!"
       redirect_back fallback_location: root_path
     end
   end
