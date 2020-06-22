@@ -189,19 +189,45 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
+      post upvote_path(existing_work.id)
+      
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+      
     end
 
-    it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+    it "succeeds for a logged-in user" do
+      perform_login
+
+      post upvote_path(existing_work)
+
+      assert_equal 'Successfully upvoted!', flash[:result_text]
+    end
+    
+    it "succeeds for a fresh user-vote pair" do
+      new_user = User.new(uid: "111111", username: "CheezItMan", provider: "github", email: "chris@adadev.org")
+      perform_login(new_user)
+
+      post upvote_path(existing_work)
+
+      assert_equal 'Successfully upvoted!', flash[:result_text]
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      perform_login
+
+      # 1st time upvoting
+      post upvote_path(existing_work)
+
+      assert_equal 'Successfully upvoted!', flash[:result_text]
+
+      # 2nd time upvoting
+      post upvote_path(existing_work)
+
+      assert_equal 'Could not upvote', flash[:result_text]
+      must_redirect_to work_path(existing_work.id)
     end
   end
 end
