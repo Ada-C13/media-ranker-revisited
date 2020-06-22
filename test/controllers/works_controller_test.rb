@@ -1,5 +1,4 @@
 require "test_helper"
-require "minitest/skip_dsl"
 
 describe WorksController do
   let(:existing_work) { works(:album) }
