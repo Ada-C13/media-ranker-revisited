@@ -31,12 +31,16 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+gem "omniauth"
+gem "omniauth-github"
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
 gem 'bootstrap', '~> 4.1.3'
 
 group :development, :test do
+  gem 'dotenv-rails'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
 
