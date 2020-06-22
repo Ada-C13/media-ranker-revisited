@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_094136) do
     t.string "provider"
     t.string "email"
     t.string "avatar"
+    t.string "name"
   end
 
   create_table "votes", id: :serial, force: :cascade do |t|
