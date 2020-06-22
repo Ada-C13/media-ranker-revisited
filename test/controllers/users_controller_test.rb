@@ -60,7 +60,7 @@ describe UsersController do
       post logout_path
       
       expect(flash[:status]).must_equal :failure
-      expect(flash[:result_text]).must_equal "You must be logged in before to logout!"
+      expect(flash[:result_text]).must_equal "Sorry! You must be logged in to do that!"
       must_redirect_to root_path
     end    
   end
