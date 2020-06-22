@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :find_user
 
   def require_login
-    if !login_user
+    if !@login_user
       flash[:status] = :failure 
       flash[:result_text] = "You must be logged in to do that"
 
