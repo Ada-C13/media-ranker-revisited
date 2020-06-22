@@ -48,12 +48,16 @@ describe WorksController do
 
   describe "index" do
     it "succeeds when there are works" do
+      perform_login
+
       get works_path
 
       must_respond_with :success
     end
 
     it "succeeds when there are no works" do
+      perform_login
+
       Work.all do |work|
         work.destroy
       end
@@ -123,28 +127,28 @@ describe WorksController do
   end
 
   describe "show" do
+    it "renders 404 not_found for a bogus work ID" do
+      destroyed_id = existing_work.id
+      existing_work.destroy
+
+      get work_path(destroyed_id)
+
+      must_respond_with :not_found
+    end
+
     it "redirects to the main page with an error message if not logged in" do
-      get work_path(existing_work.id)
+      get work_path(Work.first.id)
       
       assert_equal "You must be logged in to do that", flash[:result_text]
-        must_redirect_to root_path
+      must_redirect_to root_path
       end
       
-      it "succeeds when logged in" do
-        perform_login
-        
-        get work_path(existing_work.id)
-        must_respond_with :success
-      end
+    it "succeeds when logged in" do
+      perform_login
 
-      it "renders 404 not_found for a bogus work ID" do
-        destroyed_id = existing_work.id
-        existing_work.destroy
-  
-        get work_path(destroyed_id)
-  
-        must_respond_with :not_found
-      end
+      get work_path(Work.first)
+      must_respond_with :success
+    end
   end
 
   describe "edit" do
