@@ -1,4 +1,5 @@
 class WorksController < ApplicationController
+  before_action :require_login, except: [:root]
   # We should always be able to tell what category
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
@@ -72,7 +73,7 @@ class WorksController < ApplicationController
         flash[:messages] = vote.errors.messages
       end
     else
-      flash[:result_text] = "You must log in to do that"
+      flash[:result_text] = "You must be logged in to do that"
     end
 
     # Refresh the page to show either the updated vote count
