@@ -18,7 +18,7 @@ class UsersController < ApplicationController
   def create
     auth_hash = request.env["omniauth.auth"]
 
-    user = User.find_by(uid: auth_hash[:uid], provider: auth_hash[:provider])
+    user = User.find_by(uid: auth_hash[:uid])
     
     if user #user exists
       flash[:notice] = "Existing user #{user.username} is looged in."
