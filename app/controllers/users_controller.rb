@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :require_login, except: [:create, :destroy]
+  before_action :require_login, except: [:create]
 
   def index
     @users = User.all
@@ -29,6 +29,7 @@ class UsersController < ApplicationController
       else
         flash[:status] = :failure
         flash[:result_text] = "Could not create user account #{user.errors.messages}"
+        flash[:messages] = user.errors.messages
         return redirect_to root_path
       end
     end 
