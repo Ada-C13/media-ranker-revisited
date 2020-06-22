@@ -187,7 +187,7 @@ describe WorksController do
     end
   end
 
-  describe "upvote" do
+  describe "upvote" do # upvote POST   /works/:id/upvote 
     it "redirects to the work page if no user is logged in" do
       skip
     end
@@ -197,8 +197,24 @@ describe WorksController do
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
-    end
+        user = users(:grace)
+        work = works(:poodr)
+        perform_login(user)
+        post upvote(work)
+  
+      # it "creates a new user" do
+      #   start_count = User.count
+      #   user = User.new(provider: "github", uid: 99999, name: "test_user", email: "test@user.com")
+      
+      #   perform_login(user)
+  
+      #   must_redirect_to root_path
+      
+      #   User.count.must_equal start_count + 1
+      
+      #   session[:user_id].must_equal User.last.id
+      # end
+        end
 
     it "redirects to the work page if the user has already voted for that work" do
       skip

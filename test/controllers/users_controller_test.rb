@@ -38,6 +38,19 @@ describe UsersController do
     
       session[:user_id].must_equal nil
     end
-    
+
   end
+  describe "logging out" do 
+    it "succesfully logs out a user" do
+      user = users(:grace)
+    
+      perform_login(user)
+      session[:user_id].must_equal  user.id
+    
+      delete logout_path(user)
+      session[:user_id].must_equal  nil
+
+    end
+  end
+  
 end
