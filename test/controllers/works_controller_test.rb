@@ -189,35 +189,39 @@ describe WorksController do
 
   describe "upvote" do # upvote POST   /works/:id/upvote 
     it "redirects to the work page if no user is logged in" do
-      skip
-    end
+      init_vote_count = Vote.count
+      work = works(:poodr)
+      post upvote_path(work)
+      expect(Vote.count).must_equal init_vote_count
+      expect(flash[:result_text]).must_equal "You must log in to do that"
 
-    it "redirects to the work page after the user has logged out" do
-      skip
+      must_redirect_to work_path(work)
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-        user = users(:grace)
-        work = works(:poodr)
-        perform_login(user)
-        post upvote(work)
-  
-      # it "creates a new user" do
-      #   start_count = User.count
-      #   user = User.new(provider: "github", uid: 99999, name: "test_user", email: "test@user.com")
-      
-      #   perform_login(user)
-  
-      #   must_redirect_to root_path
-      
-      #   User.count.must_equal start_count + 1
-      
-      #   session[:user_id].must_equal User.last.id
-      # end
-        end
+      init_vote_count = Vote.count
+      user = users(:grace)
+      work = works(:poodr)
+      perform_login(user)
+      post upvote_path(work)
+      expect(Vote.count).must_equal init_vote_count + 1
+      expect(flash[:status]).must_equal :success
+      expect(flash[:result_text]).must_equal "Successfully upvoted!"
+
+      must_redirect_to work_path(work)
+    end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      user = users(:grace)
+      work = works(:poodr)
+      perform_login(user)
+      post upvote_path(work)
+      init_vote_count = Vote.count
+      post upvote_path(work)
+      expect(Vote.count).must_equal init_vote_count
+      expect(flash[:result_text]).must_equal "Could not upvote"
+
+      must_redirect_to work_path(work)
     end
   end
 end
