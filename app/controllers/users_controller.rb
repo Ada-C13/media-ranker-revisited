@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-  
   def index
     @users = User.all
   end
@@ -10,9 +9,14 @@ class UsersController < ApplicationController
   end
 
   def create
+    puts "inside create"
     auth_hash = request.env["omniauth.auth"]
+
+    p auth_hash
+   
    
     user = User.find_by(uid: auth_hash[:uid], provider: "github")
+    p user
     if user
       # User was found in the database
       flash[:success] = "Logged in as returning user #{user.name}"
@@ -28,8 +32,10 @@ class UsersController < ApplicationController
     end
     session[:uid] = user.uid
     redirect_to root_path
+    puts "this is the end"
     return
   end
+
 
   def destroy
     session[:uid] = nil

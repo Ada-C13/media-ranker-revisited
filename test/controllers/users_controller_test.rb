@@ -19,7 +19,7 @@ describe UsersController do
       kari.uid = 2420
       perform_login(kari)
     
-      User.count.must_equal start_count + 1
+      expect(User.count).must_equal start_count + 1
       session[:uid].must_equal kari.uid
       must_redirect_to root_path
     end
