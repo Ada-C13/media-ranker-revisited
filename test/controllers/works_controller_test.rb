@@ -188,20 +188,24 @@ describe WorksController do
   end
 
   describe "upvote" do
-    it "redirects to the work page if no user is logged in" do
-      skip
+    describe "guest user" do
+      it "redirects to the work page if no user is logged in" do
+        skip
+      end
+
+      it "redirects to the work page after the user has logged out" do
+        skip
+      end
     end
 
-    it "redirects to the work page after the user has logged out" do
-      skip
-    end
+    describe "authorized user" do
+      it "succeeds for a logged-in user and a fresh user-vote pair" do
+        skip
+      end
 
-    it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
-    end
-
-    it "redirects to the work page if the user has already voted for that work" do
-      skip
+      it "redirects to the work page if the user has already voted for that work" do
+        skip
+      end
     end
   end
 end
