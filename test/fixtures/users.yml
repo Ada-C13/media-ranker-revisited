@@ -5,3 +5,19 @@ dan:
 
 kari:
   username: kari
+
+arthur:
+  provider: github
+  uid: 12345
+  email: arthur@pbskids.com
+  username: aardvark_arthur
+  name: Arthur the Aarvark
+
+dw:
+  provider: github
+  uid: 12346
+  email: ada@adadevelopersacademy.org
+  username: aardvark_dw
+  name: DW the Aarvark
+
+
