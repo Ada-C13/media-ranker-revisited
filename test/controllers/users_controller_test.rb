@@ -3,7 +3,7 @@ require "test_helper"
 describe UsersController do
   describe "login" do 
     it "can log in as existing user" do 
-      count = User.all.length
+      count = User.count
       perform_login(users(:ada))
 
       expect(flash["status"]).must_equal :success 
@@ -15,7 +15,7 @@ describe UsersController do
     end
 
     it "can log in as new user" do 
-      count = User.all.length
+      count = User.count
       new_user = User.new(uid: "1112222", username: "Pengsoo", provider: "github", email: "pengsoo@adadev.com")
 
       expect {
@@ -29,8 +29,8 @@ describe UsersController do
       must_respond_with :redirect
     end
 
-    # TODO
-    it "cannot log in with an invalid user id" do 
+
+    it "cannot log in with insufficient user info" do 
       
       new_user = User.new(uid: "5556666", provider: "github", email: "faker@adadev.com")
 
@@ -63,7 +63,6 @@ describe UsersController do
       must_redirect_to root_path
     end
 
-    # TODO
     it "cannot logout as guest user" do 
       
       delete logout_path

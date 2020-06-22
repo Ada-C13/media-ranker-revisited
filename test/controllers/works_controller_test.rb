@@ -314,7 +314,6 @@ describe WorksController do
     end
 
 
-    # TODO
     describe "new" do
       it "redirects to root_path as guest user when trying to add a new work" do
 
@@ -326,7 +325,7 @@ describe WorksController do
       end
     end
   
-    # TODO
+
     describe "create" do
       it "redirects to root_path when trying to create a work with valid data for a real category" do
         new_work = { work: { title: "Dirty Computer", category: "album" } }
@@ -342,7 +341,7 @@ describe WorksController do
         must_redirect_to root_path
       end
   
-      # TODO:
+  
       it "redirects to root_path and does not update the DB for bogus data" do
         bad_work = { work: { title: nil, category: "book" } }
   
@@ -356,7 +355,7 @@ describe WorksController do
 
       end
   
-      # TODO
+
       it "redirects to root_path when trying to create a work for bogus categories" do
         INVALID_CATEGORIES.each do |category|
           invalid_work = { work: { title: "Invalid Work", category: category } }
@@ -386,7 +385,6 @@ describe WorksController do
     end
 
     describe "edit" do
-      # TODO
       it "redirects to root_path when trying to edit for an extant work ID" do
         get edit_work_path(album.id)
   
@@ -406,7 +404,6 @@ describe WorksController do
   
 
     describe "update" do
-      # TODO
       it "redirects to root_path when trying to update a valid work" do
         updates = { work: { title: "Dirty Computer" } }
   
@@ -425,7 +422,6 @@ describe WorksController do
         must_redirect_to root_path
       end
   
-      # TODO
       it "redirects to root_path when updating a work for bogus data" do
         updates = { work: { title: nil } }
   
@@ -449,7 +445,6 @@ describe WorksController do
       end
     end
 
-    # TODO
     describe "destroy" do
       it "redirects to root_path for an extant work ID" do
         expect {
@@ -492,6 +487,5 @@ describe WorksController do
         must_redirect_to root_path
       end
     end
-
   end
 end
