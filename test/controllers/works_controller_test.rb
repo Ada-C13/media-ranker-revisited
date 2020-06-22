@@ -208,7 +208,18 @@ describe WorksController do
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+      vote_hash[:vote][:user] = perform_login
+
+      delete logout_path, params: {}
+      expect(session[:user_id]).must_be_nil
+
+      expect {
+        post upvote_path(existing_work), params: vote_hash
+      }.wont_differ "Vote.count"
+
+      expect(flash[:result_text]).must_equal "You must log in to do that"
+
+      must_redirect_to work_path(existing_work)
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
