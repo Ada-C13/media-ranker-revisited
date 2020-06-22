@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html>
 <head>
   <title>Media Ranker 2.0</title>
@@ -33,22 +33,13 @@
         </li>
       </ul>
       <ul class="nav app-header__user-nav-container">
-        <% if @login_user %>
-
         <li class="nav-item app-header__nav_item">
-          <%= link_to "Logged in as #{@login_user.username}", user_path(@login_user), class: "btn btn-primary" %>
+          <% if session[:user_id] %>
+            <%= link_to "Log out #{User.find_by(id: session[:user_id]).username}", logout_path, method: :delete, :class => "nav-link"  %>
+          <% else %>
+            <%= link_to "Login with Github", github_login_path, :class => "nav-link"  %>
+          <% end %>
         </li>
-        <li class="nav-item app-header__nav_item">
-          <%= link_to "Log Out", logout_path, method: :post, class: "btn btn-primary" %>
-        </li>
-
-        <% else %>
-
-        <li class="nav-item app-header__nav_item">
-          <%= link_to "Log In", login_path, class: "btn btn-primary" %>
-        </li>
-        <% end %>
-
       </ul>
     </nav>
   </header>
@@ -75,3 +66,4 @@
   </main>
 </body>
 </html>
+

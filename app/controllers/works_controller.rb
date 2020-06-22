@@ -2,6 +2,7 @@ class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
+  before_action :require_login, except: [:root]
 
   def root
     @albums = Work.best_albums
@@ -34,7 +35,13 @@ class WorksController < ApplicationController
   end
 
   def show
-    @votes = @work.votes.order(created_at: :desc)
+    if @login_user.nil?
+      flash[:status] = :failure
+      flash[:result_text] = "You must be logged in to do that."
+      redirect_to root_path
+    else
+      @votes = @work.votes.order(created_at: :desc)
+    end
   end
 
   def edit
