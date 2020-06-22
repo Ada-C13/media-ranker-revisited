@@ -34,20 +34,29 @@ describe WorksController do
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
 
   describe "index" do
-    it "succeeds when there are works" do
+    it "succeeds for a logged in user when there are works" do
+      perform_login
       get works_path
 
       must_respond_with :success
     end
 
-    it "succeeds when there are no works" do
+    it "succeeds for a logged in user when there are no works" do
+      perform_login
+
       Work.all do |work|
         work.destroy
       end
 
       get works_path
-
       must_respond_with :success
+    end
+
+    it "redirects to root path when a user is not logged in" do
+      get works_path
+
+      assert_equal "You must log in to do that", flash[:result_text]
+      must_redirect_to root_path
     end
   end
 
@@ -96,10 +105,18 @@ describe WorksController do
   end
 
   describe "show" do
-    it "succeeds for an extant work ID" do
+    it "succeeds for an extant work ID and a logged in user" do
+      perform_login
       get work_path(existing_work.id)
 
       must_respond_with :success
+    end
+
+    it "redirects to root path for an extant work ID when a user is not logged in" do
+      get work_path(existing_work.id)
+
+      assert_equal "You must log in to do that", flash[:result_text]
+      must_redirect_to root_path
     end
 
     it "renders 404 not_found for a bogus work ID" do
