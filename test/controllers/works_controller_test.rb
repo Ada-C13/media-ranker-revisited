@@ -28,6 +28,19 @@ describe WorksController do
 
       must_respond_with :success
     end
+
+    it "succeeds when not logged in" do
+      get root_path
+
+      must_respond_with :success
+    end
+
+    it "succeeds when logged in" do
+      perform_login
+
+      get root_path
+      must_respond_with :success
+    end
   end
 
   CATEGORIES = %w(albums books movies)
@@ -35,18 +48,36 @@ describe WorksController do
 
   describe "index" do
     it "succeeds when there are works" do
+      perform_login
+
       get works_path
 
       must_respond_with :success
     end
 
     it "succeeds when there are no works" do
+      perform_login
+
       Work.all do |work|
         work.destroy
       end
 
       get works_path
 
+      must_respond_with :success
+    end
+
+    it "redirects to the main page with an error message if not logged in" do
+      get works_path
+
+      assert_equal "You must be logged in to do that", flash[:result_text]
+      must_redirect_to root_path
+    end
+
+    it "succeeds when logged in" do
+      perform_login
+
+      get works_path
       must_respond_with :success
     end
   end
@@ -96,12 +127,6 @@ describe WorksController do
   end
 
   describe "show" do
-    it "succeeds for an extant work ID" do
-      get work_path(existing_work.id)
-
-      must_respond_with :success
-    end
-
     it "renders 404 not_found for a bogus work ID" do
       destroyed_id = existing_work.id
       existing_work.destroy
@@ -109,6 +134,20 @@ describe WorksController do
       get work_path(destroyed_id)
 
       must_respond_with :not_found
+    end
+
+    it "redirects to the main page with an error message if not logged in" do
+      get work_path(Work.first.id)
+      
+      assert_equal "You must be logged in to do that", flash[:result_text]
+      must_redirect_to root_path
+      end
+      
+    it "succeeds when logged in" do
+      perform_login
+
+      get work_path(Work.first)
+      must_respond_with :success
     end
   end
 
@@ -189,19 +228,45 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
+      post upvote_path(existing_work.id)
+      
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+      
     end
 
-    it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+    it "succeeds for a logged-in user" do
+      perform_login
+
+      post upvote_path(existing_work)
+
+      assert_equal 'Successfully upvoted!', flash[:result_text]
+    end
+    
+    it "succeeds for a fresh user-vote pair" do
+      new_user = User.new(uid: "111111", username: "CheezItMan", provider: "github", email: "chris@adadev.org")
+      perform_login(new_user)
+
+      post upvote_path(existing_work)
+
+      assert_equal 'Successfully upvoted!', flash[:result_text]
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      perform_login
+
+      # 1st time upvoting
+      post upvote_path(existing_work)
+
+      assert_equal 'Successfully upvoted!', flash[:result_text]
+
+      # 2nd time upvoting
+      post upvote_path(existing_work)
+
+      assert_equal 'Could not upvote', flash[:result_text]
+      must_redirect_to work_path(existing_work.id)
     end
   end
 end
