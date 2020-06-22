@@ -5,7 +5,7 @@ describe UsersController do
   let(:kari) { users(:kari) }
 
   describe 'auth_callback' do
-    it "should log in an existing user" do
+    it "can log in an existing user" do
       user_count = User.count
       perform_login(dan)
 
@@ -14,7 +14,7 @@ describe UsersController do
       expect(user_count).must_equal User.count
     end
       
-    it "should create a new user" do
+    it "can create a new user" do
       start_count = User.count
       kari.uid = 2420
       perform_login(kari)
@@ -24,7 +24,7 @@ describe UsersController do
       must_redirect_to root_path
     end
 
-    it "should flash error and redirect to root path if invalid user info provided" do
+    it "can flash error and redirect to root path if provided invalid user data" do
       start_count = User.count
       ted = User.new(provider: "github", name: "ted")
       perform_login(ted)
@@ -38,7 +38,7 @@ describe UsersController do
   end
 
     describe "logout" do
-      it "should successfully log out a user" do
+      it "can successfully log out a user" do
         # log in
         perform_login(dan)
 
@@ -56,7 +56,7 @@ describe UsersController do
 
   describe 'not-authenticated' do
     describe 'index' do 
-      it 'should show a list of valid users' do
+      it 'can show a list of valid users' do
         get users_path
 
         must_respond_with :success
@@ -64,13 +64,13 @@ describe UsersController do
     end
 
     describe 'show' do 
-      it 'should show a valid user' do
+      it 'can show a valid user' do
         get user_path(dan)
 
         must_respond_with :success
       end
 
-      it 'should redirect with an invalid user' do
+      it 'can redirect with an invalid user' do
         get user_path(-1)
 
         must_respond_with :not_found

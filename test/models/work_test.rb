@@ -38,7 +38,7 @@ describe Work do
     end
 
     it "rejects invalid categories" do
-      invalid_categories = ["cat", "dog", "phd thesis", 1337, nil]
+      invalid_categories = ["bee", "bell", "something", 1337, nil]
       invalid_categories.each do |category|
         work = Work.new(title: "test", category: category)
         work.valid?.must_equal false
@@ -93,14 +93,11 @@ describe Work do
 
   describe "top_ten" do
     before do
-      # TODO DPR: This runs pretty slow. Fixtures?
-      # Create users to do the voting
       test_users = []
       20.times do |i|
         test_users << User.create!(username: "user#{i}", uid: i*10000)
       end
 
-      # Create media to vote upon
       Work.where(category: "movie").destroy_all
       8.times do |i|
         work = Work.create!(category: "movie", title: "test movie #{i}")

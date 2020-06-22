@@ -12,7 +12,7 @@ describe WorksController do
         must_respond_with :success
       end
 
-      it "succeeds with one media type absent" do
+      it "succeeds with an absent media type" do
         only_book = works(:poodr)
         only_book.destroy
   
@@ -21,7 +21,7 @@ describe WorksController do
         must_respond_with :success
       end
 
-      it "succeeds with no media" do
+      it "succeeds with no media present" do
         Work.destroy_all
   
         get root_path
@@ -42,7 +42,7 @@ describe WorksController do
   end
   
   describe "show" do
-    it "succeeds for an extant work ID" do
+    it "succeeds for an existing work ID" do
       perform_login(users(:dan))
       delete logout_path
       get work_path(existing_work.id)
@@ -51,7 +51,7 @@ describe WorksController do
       must_redirect_to root_path
     end
 
-    it "renders 404 not_found for a bogus work ID" do
+    it "renders 404 not_found for a bad work ID" do
       destroyed_id = existing_work.id
       existing_work.destroy
 
@@ -89,14 +89,14 @@ describe "authenticated" do
     end
   end
   describe "show" do
-    it "succeeds for an extant work ID" do
+    it "succeeds for an existing work ID" do
       perform_login(users(:dan))
       get work_path(existing_work.id)
 
       must_respond_with :found
     end
 
-    it "renders 404 not_found for a bogus work ID" do
+    it "renders 404 not_found for a bad work ID" do
       perform_login(users(:dan))
       destroyed_id = existing_work.id
       existing_work.destroy
@@ -118,19 +118,19 @@ end
 
   describe "create" do
     it "creates a work with valid data for a real category" do
-      new_work = { work: { title: "Dirty Computer", category: "album" } }
+      new_work = { work: { title: "Sample Work", category: "album" } }
 
       expect {
         post works_path, params: new_work
       }.must_change "Work.count", 1
 
-      new_work_id = Work.find_by(title: "Dirty Computer").id
+      new_work_id = Work.find_by(title: "Sample Work").id
 
       must_respond_with :redirect
       must_redirect_to work_path(new_work_id)
     end
 
-    it "renders bad_request and does not update the DB for bogus data" do
+    it "renders bad_request and does not update the DB for bad data" do
       bad_work = { work: { title: nil, category: "book" } }
 
       expect {
@@ -140,7 +140,7 @@ end
       must_respond_with :bad_request
     end
 
-    it "renders 400 bad_request for bogus categories" do
+    it "renders 400 bad_request for bad categories" do
       INVALID_CATEGORIES.each do |category|
         invalid_work = { work: { title: "Invalid Work", category: category } }
 
@@ -155,37 +155,37 @@ end
  
 
   describe "edit" do
-    it "succeeds for an extant work ID" do
+    it "succeeds for an existing work ID" do
       get edit_work_path(existing_work.id)
 
       must_respond_with :success
     end
 
-    it "renders 404 not_found for a bogus work ID" do
-      bogus_id = existing_work.id
+    it "renders 404 not_found for a bad work ID" do
+      bad_id = existing_work.id
       existing_work.destroy
 
-      get edit_work_path(bogus_id)
+      get edit_work_path(bad_id)
 
       must_respond_with :not_found
     end
   end
 
   describe "update" do
-    it "succeeds for valid data and an extant work ID" do
-      updates = { work: { title: "Dirty Computer" } }
+    it "succeeds for valid data and an existing work ID" do
+      updates = { work: { title: "Sample Work" } }
 
       expect {
         put work_path(existing_work), params: updates
       }.wont_change "Work.count"
       updated_work = Work.find_by(id: existing_work.id)
 
-      updated_work.title.must_equal "Dirty Computer"
+      updated_work.title.must_equal "Sample Work"
       must_respond_with :redirect
       must_redirect_to work_path(existing_work.id)
     end
 
-    it "renders bad_request for bogus data" do
+    it "renders bad_request for bad data" do
       updates = { work: { title: nil } }
 
       expect {
@@ -197,18 +197,18 @@ end
       must_respond_with :not_found
     end
 
-    it "renders 404 not_found for a bogus work ID" do
-      bogus_id = existing_work.id
+    it "renders 404 not_found for a bad work ID" do
+      bad_id = existing_work.id
       existing_work.destroy
 
-      put work_path(bogus_id), params: { work: { title: "Test Title" } }
+      put work_path(bad_id), params: { work: { title: "Test Title" } }
 
       must_respond_with :not_found
     end
   end
 
   describe "destroy" do
-    it "succeeds for an extant work ID" do
+    it "succeeds for an existing work ID" do
       expect {
         delete work_path(existing_work.id)
       }.must_change "Work.count", -1
@@ -217,12 +217,12 @@ end
       must_redirect_to root_path
     end
 
-    it "renders 404 not_found and does not update the DB for a bogus work ID" do
-      bogus_id = existing_work.id
+    it "renders 404 not_found and does not update the DB for a bad work ID" do
+      bad_id = existing_work.id
       existing_work.destroy
 
       expect {
-        delete work_path(bogus_id)
+        delete work_path(bad_id)
       }.wont_change "Work.count"
 
       must_respond_with :not_found
