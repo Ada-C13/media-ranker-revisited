@@ -35,7 +35,7 @@
       <ul class="nav app-header__user-nav-container">
         <li class="nav-item app-header__nav_item">
           <% if session[:user_id] %>
-            <%= link_to "Log out #{User.find_by(id: session[:user_id]).username}", logout_path, method: "delete", :class => "nav-link"  %>
+            <%= link_to "Log out #{User.find_by(id: session[:user_id]).username}", logout_path, method: :delete, :class => "nav-link"  %>
           <% else %>
             <%= link_to "Login with Github", github_login_path, :class => "nav-link"  %>
           <% end %>

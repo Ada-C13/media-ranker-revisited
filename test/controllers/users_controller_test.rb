@@ -1,22 +1,6 @@
 require "test_helper"
 
 describe UsersController do
-  describe "login" do
-    it "can login an existing user" do
-      user = perform_login(users(:ada))
-      must_respond_with :redirect
-    end
-
-    it "can login a new user" do
-      new_user = User.new(uid: 11111, username: "Rose", provider: 'github', email: 'rose@rose.rose')
-      expect {
-        login_user = perform_login(new_user)
-    }.must_change "User.count", 1
-
-      must_respond_with :redirect
-    end
-  end
-
   describe "auth_callback" do
     it "logs in an existing user and redirects to the root route" do
       start_count = User.count
@@ -32,6 +16,22 @@ describe UsersController do
       session[:user_id].must_equal user.id
 
       User.count.must_equal start_count
+    end
+  end
+
+  describe "login" do
+    it "can login an existing user" do
+      user = perform_login(users(:ada))
+      must_respond_with :redirect
+    end
+
+    it "can login a new user" do
+      new_user = User.new(uid: 11111, username: "Rose", provider: 'github', email: 'rose@rose.rose')
+      expect {
+        login_user = perform_login(new_user)
+    }.must_change "User.count", 1
+
+      must_respond_with :redirect
     end
   end
 

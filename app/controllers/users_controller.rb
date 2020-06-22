@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_action :require_login, except: [:current_user]
+  before_action :require_login, except: [:create]
 
   def index
     @users = User.all
@@ -10,27 +10,50 @@ class UsersController < ApplicationController
     render_404 unless @user
   end
 
+  # def create
+  #   auth_hash = request.env["omniauth.auth"]
+    
+  #   user = User.find_by(uid: auth_hash[:uid], provider: 'github')
+
+  #   if user
+  #     flash[:success] = "Logged in as user #{user.name}"
+  #   else
+
+  #     user = User.build_from_github(auth_hash)
+      
+  #     if user.save
+  #       flash[:success] = "Logged in as new user #{user.name}"
+  #     else
+  #       flash[:error] = "Could not create new user account: #{user.errors.messages}"
+  #       return redirect_to root_path
+  #     end
+  #   end
+
+  #   session[:user_id] = user.id
+  #   redirect_to root_path
+  # end
+
   def create
     auth_hash = request.env["omniauth.auth"]
-    
-    user = User.find_by(uid: auth_hash[:uid], provider: 'github')
+    user = User.find_by(uid: auth_hash[:uid], provider: auth_hash[:provider])
 
     if user
-      flash[:success] = "Logged in as user #{user.name}"
+      flash[:status] = :success
+      flash[:result_text] = "Logged in as returning user #{user.username}"
     else
-
       user = User.build_from_github(auth_hash)
-      
+
       if user.save
-        flash[:success] = "Logged in as new user #{user.name}"
+        flash[:status] = :success
+        flash[:result_text] = "Welcome back, #{user.username}"
       else
-        flash[:error] = "Count not create new user account: #{user.errors.messages}"
+        flash[:error] = "User account could not be created: #{user.errors.messages}"
         return redirect_to root_path
       end
     end
 
     session[:user_id] = user.id
-    redirect_to root_path
+    return redirect_to root_path
   end
 
   def destroy

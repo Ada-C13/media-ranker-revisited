@@ -5,13 +5,13 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
-  user: kari
+  user: ada
   work: album
 
 two:
-  user: dan
-  work: another_album
+  user: grace
+  work: poodr
 
 three:
-  user: dan
+  user: grace
   work: album

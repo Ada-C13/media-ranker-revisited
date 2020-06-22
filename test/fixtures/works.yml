@@ -1,11 +1,12 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 album:
-  title: Old Title
-  creator: You Create
+  title: Floss
+  creator: Injury Reserve
   description: This is an older album
   publication_year: 1955-11-01
   category: album
+  id: 4
 
 another_album:
   title: New Title
@@ -13,6 +14,7 @@ another_album:
   description: This is a newer album
   publication_year: 2016-04-08
   category: album
+  id: 5
 
 poodr:
   title: Practical Object Oriented Design in Ruby
@@ -20,7 +22,9 @@ poodr:
   description: programming!
   publication_year: 2012
   category: book
+  id: 6
 
 movie:
   title: test movie - has only required fields
   category: movie
+  
