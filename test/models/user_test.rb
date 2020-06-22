@@ -70,4 +70,29 @@ describe User do
       expect(@user.errors.messages).must_include :email
     end
   end
+
+  describe "build from github" do
+    let (:auth_hash) {
+      {
+        uid: 1337,  
+        provider: "github", 
+        info: {
+          nickname: "username",
+          name: "name",
+          email: "email@email.com"
+        }
+      }
+    }
+
+    it "can successfully build a user from a given auth_hash" do
+      user = User.build_from_github(auth_hash)
+
+      expect(user.valid?).must_equal true
+      expect(user.uid).must_equal auth_hash[:uid]
+      expect(user.provider).must_equal auth_hash[:provider]
+      expect(user.username).must_equal auth_hash[:info][:nickname]
+      expect(user.name).must_equal auth_hash[:info][:name]
+      expect(user.email).must_equal auth_hash[:info][:email]
+    end
+  end
 end
