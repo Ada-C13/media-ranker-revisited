@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_action :require_login, except: [:create]
+
   def index
     @users = User.all
   end
@@ -8,11 +10,10 @@ class UsersController < ApplicationController
     render_404 unless @user
   end
 
-
   def create
     auth_hash = request.env["omniauth.auth"]
-
     user = User.find_by(uid: auth_hash[:uid], provider: "github")
+
     if user
       flash[:success] = "Logged in as returning user #{user.username}"
     else
@@ -36,7 +37,7 @@ class UsersController < ApplicationController
     redirect_to root_path
   end
 
-  
+
 
   # def login_form
   # end
@@ -64,10 +65,10 @@ class UsersController < ApplicationController
   #   redirect_to root_path
   # end
 
-  # def logout
-  #   session[:user_id] = nil
-  #   flash[:status] = :success
-  #   flash[:result_text] = "Successfully logged out"
-  #   redirect_to root_path
-  # end
+  def logout
+    session[:user_id] = nil
+    flash[:status] = :success
+    flash[:result_text] = "Successfully logged out"
+    redirect_to root_path
+  end
 end
