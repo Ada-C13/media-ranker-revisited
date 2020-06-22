@@ -34,13 +34,23 @@ describe WorksController do
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
 
   describe "index" do
-    it "succeeds when there are works" do
+    it "succeeds when there are works & user is logged in" do
+      user = users(:grace)
+      perform_login(user)
+
       get works_path
 
       must_respond_with :success
     end
+    it "fails when there are works & user is NOT logged in" do      
+      get works_path
+      expect(flash[:result_text]).must_equal  "You must log in to do that"
+      must_redirect_to root_path
+    end
 
-    it "succeeds when there are no works" do
+    it "succeeds when there are no works & logged in" do
+      user = users(:grace)
+      perform_login(user)
       Work.all do |work|
         work.destroy
       end
@@ -49,13 +59,32 @@ describe WorksController do
 
       must_respond_with :success
     end
+
+    it "fails when there are no works & NOT logged in" do
+
+      Work.all do |work|
+        work.destroy
+      end
+
+      get works_path
+
+      expect(flash[:result_text]).must_equal  "You must log in to do that"
+      must_redirect_to root_path
+    end
   end
 
   describe "new" do
-    it "succeeds" do
+    it "succeeds when logged in" do
+      user = users(:grace)
+      perform_login(user)
       get new_work_path
 
       must_respond_with :success
+    end
+    it "fails when not logged in" do
+      get new_work_path
+      expect(flash[:result_text]).must_equal  "You must log in to do that"
+      must_redirect_to root_path
     end
   end
 
@@ -96,11 +125,20 @@ describe WorksController do
   end
 
   describe "show" do
-    it "succeeds for an extant work ID" do
+    it "succeeds for an extant work ID & Logged In" do
+      user = users(:grace)
+      perform_login(user)
       get work_path(existing_work.id)
 
       must_respond_with :success
     end
+    it "fails for an extant work ID & NOT Logged In" do
+      get work_path(existing_work.id)
+
+      expect(flash[:result_text]).must_equal  "You must log in to do that"
+        must_redirect_to root_path
+      end
+
 
     it "renders 404 not_found for a bogus work ID" do
       destroyed_id = existing_work.id
@@ -187,7 +225,7 @@ describe WorksController do
     end
   end
 
-  describe "upvote" do # upvote POST   /works/:id/upvote 
+  describe "upvote" do # upvote POST /works/:id/upvote 
     it "redirects to the work page if no user is logged in" do
       init_vote_count = Vote.count
       work = works(:poodr)
