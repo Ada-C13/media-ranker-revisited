@@ -188,8 +188,23 @@ describe WorksController do
   end
 
   describe "upvote" do
+    let (:vote_hash) {
+      {
+        vote: {
+          user: nil,
+          work: existing_work
+        }
+      }
+    }
+    
     it "redirects to the work page if no user is logged in" do
-      skip
+      expect {
+        post upvote_path(existing_work), params: vote_hash
+      }.wont_differ "Vote.count"
+
+      expect(flash[:result_text]).must_equal "You must log in to do that"
+
+      must_redirect_to work_path(existing_work)
     end
 
     it "redirects to the work page after the user has logged out" do
