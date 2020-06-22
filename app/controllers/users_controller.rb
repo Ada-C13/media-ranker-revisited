@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-
+  before_action :require_login, except: [:create]
+  
   def create
     auth_hash = request.env["omniauth.auth"]
 
@@ -15,9 +16,9 @@ class UsersController < ApplicationController
         flash[:status] = :success
         flash[:result_text] = "Logged in as new user #{user.username}"
       else
-        flash.now[:status] = :failure
-        flash.now[:result_text] = "Couldn't create user account"
-        flash.now[:messages] = user.errors.messages
+        flash[:status] = :failure
+        flash[:result_text] = "Couldn't create user account"
+        flash[:messages] = user.errors.messages
         return redirect_to root_path
       end
     end
