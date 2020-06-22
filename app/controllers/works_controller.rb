@@ -2,6 +2,8 @@ class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
+  before_action :require_login, except: [:root]
+  before_action :verify_work_owner, only: [:edit, :update, :destroy]
 
   def root
     @albums = Work.best_albums
@@ -21,6 +23,7 @@ class WorksController < ApplicationController
   def create
     @work = Work.new(media_params)
     @media_category = @work.category
+    @work.user_id = @login_user.id
     if @work.save
       flash[:status] = :success
       flash[:result_text] = "Successfully created #{@media_category.singularize} #{@work.id}"
@@ -41,23 +44,24 @@ class WorksController < ApplicationController
   end
 
   def update
-    if @work.update(media_params)
-      flash[:status] = :success
-      flash[:result_text] = "Successfully updated #{@media_category.singularize} #{@work.id}"
-      redirect_to work_path(@work)
-    else
-      flash.now[:status] = :failure
-      flash.now[:result_text] = "Could not update #{@media_category.singularize}"
-      flash.now[:messages] = @work.errors.messages
-      render :edit, status: :not_found
-    end
+      if @work.update(media_params)
+        flash[:status] = :success
+        flash[:result_text] = "Successfully updated #{@media_category.singularize} #{@work.id}"
+        redirect_to work_path(@work)
+      else
+        flash.now[:status] = :failure
+        flash.now[:result_text] = "Could not update #{@media_category.singularize}"
+        flash.now[:messages] = @work.errors.messages
+        render :edit, status: :not_found
+      end
   end
 
   def destroy
-    @work.destroy
-    flash[:status] = :success
-    flash[:result_text] = "Successfully destroyed #{@media_category.singularize} #{@work.id}"
-    redirect_to root_path
+      @work.destroy
+      flash[:status] = :success
+      flash[:result_text] = "Successfully destroyed #{@media_category.singularize} #{@work.id}"
+      redirect_to root_path
+      return
   end
 
   def upvote
@@ -90,5 +94,13 @@ class WorksController < ApplicationController
     @work = Work.find_by(id: params[:id])
     render_404 unless @work
     @media_category = @work.category.downcase.pluralize
+  end
+
+  def verify_work_owner
+    if @work.verify_owner(@login_user) == false
+      flash[:status] = :failure
+      flash[:result_text] = "You are not authorized to modify this work!"
+      redirect_back fallback_location: root_path
+    end
   end
 end
