@@ -36,6 +36,8 @@ class WorksController < ApplicationController
 
   def show
     if @login_user.nil?
+      flash[:status] = :failure
+      flash[:result_text] = "You must be logged in to do that."
       redirect_to root_path
     else
       @votes = @work.votes.order(created_at: :desc)
