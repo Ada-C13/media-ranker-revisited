@@ -2,9 +2,8 @@ class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
-  # skip_before_action :require_login, only: [:index]
-  before_action :current_user, only: [:index]
 
+  before_action :require_login, except: [:root]
   def root
     @albums = Work.best_albums
     @books = Work.best_books
@@ -21,9 +20,20 @@ class WorksController < ApplicationController
   end
 
   def create
-    @work = Work.new(media_params)
-    @media_category = @work.category
+    puts "CREATE WORK"
+    begin
+      @work = Work.new(media_params)
+    puts "CREATE WORK CREATED"
+      
+      @media_category = @work.category
+
+    rescue => e
+      puts "EXCEPTIOn"
+      puts e.message
+      puts e.backtrace.join("\n")
+    end
     if @work.save
+      puts "WORK SAVED"
       flash[:status] = :success
       flash[:result_text] = "Successfully created #{@media_category.singularize} #{@work.id}"
       redirect_to work_path(@work)
@@ -36,7 +46,9 @@ class WorksController < ApplicationController
   end
 
   def show
+    @work = Work.find_by(id: params[:id])
     @votes = @work.votes.order(created_at: :desc)
+    render :show
   end
 
   def edit

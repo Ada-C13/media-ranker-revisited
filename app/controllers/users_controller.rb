@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  # skip_before_action :require_login, except: [:current_user]
+  before_action :require_login, except: [:create]
   
   def index
     @users = User.all
@@ -16,13 +16,16 @@ class UsersController < ApplicationController
     user = User.find_by(uid: auth_hash[:uid], provider: params[:provider])
 
     if user
-      flash[:notice] = "Existing user #{user.username} is logged in"
+      flash[:status] = :success
+      flash[:result_text] = "Existing user #{user.username} is logged in"
     else
       user = User.build_from_github(auth_hash)
       if user.save
-        flash[:success] = "Logged in as new user #{user.username}"
+        flash[:status] = :success
+        flash[:result_text] = "Logged in as new user #{user.username}"
       else
-        flash[:error] = "Could not create new user account: #{user.errors.messages}"
+        flash[:status] = :failure
+        flash[:result_text] = "Could not create new user account: #{user.errors.messages}"
         return redirect_to root_path
       end
     end

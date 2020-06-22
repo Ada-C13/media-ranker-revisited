@@ -1,11 +1,11 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  root "works#root"
   # Omniauth Login Route
+  resources :users, only: [:index, :show]
   get "/auth/github", as: "github_login"
 
   # Omniauth Github callback route
-  get "/auth/:provider/callback", to: "users#create", as: "omniauth_callback"
+  get "/auth/:provider/callback", to: "users#create", as: "auth_callback"
   # get "/login", to: "users#login_form", as: "login"
   # post "/login", to: "users#login"
   post "/logout", to: "users#logout", as: "logout"
@@ -13,6 +13,6 @@ Rails.application.routes.draw do
   resources :works
   post "/works/:id/upvote", to: "works#upvote", as: "upvote"
 
-  resources :users, only: [:index, :show]
-  
+  root "works#root"
+
 end

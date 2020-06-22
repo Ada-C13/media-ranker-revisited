@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_login
+    puts "REQUIRE LOGIN"
     if current_user.nil?
       flash[:status] = :failure 
       flash[:result_text] = "You must be logged in to do that"
