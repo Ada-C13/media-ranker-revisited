@@ -13,5 +13,9 @@ two:
   work: another_album
 
 three:
-  user: dan
+  user: user2
   work: album
+
+four:
+  user: user1
+  work: poodr

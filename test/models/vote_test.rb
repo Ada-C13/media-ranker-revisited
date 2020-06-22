@@ -3,7 +3,7 @@ require "test_helper"
 describe Vote do
   describe "relations" do
     it "has a user" do
-      v = votes(:one)
+      v = votes(:four)
       expect(v).must_respond_to :user
       expect(v.user).must_be_kind_of User
     end
@@ -16,10 +16,10 @@ describe Vote do
   end
 
   describe "validations" do
-    let (:user1) { User.new(username: "chris") }
-    let (:user2) { User.new(username: "chris") }
-    let (:work1) { Work.new(category: "book", title: "House of Leaves") }
-    let (:work2) { Work.new(category: "book", title: "For Whom the Bell Tolls") }
+    let (:user1) { users(:user1) }
+    let (:user2) { users(:user2) }
+    let (:work1) { works(:album) }
+    let (:work2) { works(:another_album) }
 
     it "allows one user to vote for multiple works" do
       vote1 = Vote.new(user: user1, work: work1)
@@ -29,9 +29,9 @@ describe Vote do
     end
 
     it "allows multiple users to vote for a work" do
-      vote1 = Vote.new(user: user1, work: work1)
+      vote1 = Vote.new(user: user1, work: work2)
       vote1.save!
-      vote2 = Vote.new(user: user2, work: work1)
+      vote2 = Vote.new(user: user2, work: work2)
       expect(vote2.valid?).must_equal true
     end
 

@@ -1,4 +1,6 @@
 <h2>User Summary: <%= link_to @user.username, user_path(@user) %></h2>
+<p>Name: <%= @user.name %></p>
+<p>Email: <%= mail_to @user.email %></p>
 <p>Joined site <%= render_date @user.created_at %></p>
 
 <section class="user-votes__container">
