@@ -3,15 +3,19 @@ require "test_helper"
 describe UsersController do
   describe "login" do 
     it "can log in as existing user" do 
-      user = perform_login(users(:ada))
+      count = User.all.length
+      perform_login(users(:ada))
 
       expect(flash["status"]).must_equal :success 
       expect(flash["result_text"]).must_include "Logged in as returning user"
+      expect(User.all.count).must_equal count
 
       must_respond_with :redirect
+      must_redirect_to root_path
     end
 
     it "can log in as new user" do 
+      count = User.all.length
       new_user = User.new(uid: "1112222", username: "Pengsoo", provider: "github", email: "pengsoo@adadev.com")
 
       expect {
@@ -20,6 +24,7 @@ describe UsersController do
 
       expect(flash["status"]).must_equal :success 
       expect(flash["result_text"]).must_include "Logged in as new user"
+      expect(User.all.length).must_equal count + 1
 
       must_respond_with :redirect
     end
@@ -35,6 +40,7 @@ describe UsersController do
 
       expect(flash["status"]).must_equal :failure
       expect(flash["result_text"]).must_include "Could not create user account"
+      expect(flash["messages"][:username]).must_include "can't be blank"
 
       must_redirect_to root_path
     end
@@ -43,7 +49,7 @@ describe UsersController do
   describe "logout" do 
     it "can logout as existing user" do
       # Arrange 
-      perform_login 
+      perform_login(users(:ada)) 
 
       expect(session[:user_id]).wont_be_nil
 
