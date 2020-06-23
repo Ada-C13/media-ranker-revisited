@@ -2,6 +2,20 @@ require "test_helper"
 
 describe UsersController do
 
+  describe "auth_callback" do
+    it "logs in an existing user and redirects to the root route" do
+      start_count = User.count
+      user = users(:sarah)
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
+
+      get omniauth_callback_path(:github)
+
+      must_redirect_to root_path
+      session[:user_id].must_equal user.id
+      User.count.must_equal start_count
+    end
+  end
+
   describe 'login' do
     it 'allows an existing user to login' do
       user = perform_login(users(:devin))
@@ -9,8 +23,8 @@ describe UsersController do
       must_respond_with :redirect
     end
 
-    it 'enables a new user to log in' do
-      new_user = User.new(username: 'kaida', provider: 'github', uid: 3632)
+    it "enables a new user to log in" do
+      new_user = User.new(username: "kaidasky", provider: "github", uid: 3632, email: "kaida@gmail.org", name: "kaida")
 
       expect {
         logged_in_user = perform_login(new_user)
@@ -22,7 +36,7 @@ describe UsersController do
   describe "logout" do 
     it "can logout an existing user" do 
       expect {
-        perform_logout
+        post logout_path
       }.wont_change "User.count"
 
       must_respond_with :redirect

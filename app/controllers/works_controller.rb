@@ -19,6 +19,7 @@ class WorksController < ApplicationController
 
   def create
     @work = Work.new(media_params)
+    @work.user_id = @login_user.id
     @media_category = @work.category
     if @work.save
       flash[:status] = :success
@@ -54,7 +55,7 @@ class WorksController < ApplicationController
 
   def destroy
     @work.destroy
-    flash[:status] = :success
+    flash[:success] 
     flash[:result_text] = "Successfully destroyed #{@media_category.singularize} #{@work.id}"
     redirect_to root_path
   end
