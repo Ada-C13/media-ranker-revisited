@@ -28,6 +28,20 @@ describe WorksController do
 
       must_respond_with :success
     end
+
+    it "succeeds when not logged in" do
+      get root_path
+
+      must_respond_with :success
+    end
+
+    it "succeeds when logged in" do
+      perform_login
+
+      get root_path
+      must_respond_with :success
+    end
+  
   end
 
   CATEGORIES = %w(albums books movies)
@@ -35,12 +49,16 @@ describe WorksController do
 
   describe "index" do
     it "succeeds when there are works" do
+      perform_login(users(:dan))
+
       get works_path
 
       must_respond_with :success
     end
 
     it "succeeds when there are no works" do
+      perform_login(users(:dan))
+
       Work.all do |work|
         work.destroy
       end
@@ -97,14 +115,18 @@ describe WorksController do
 
   describe "show" do
     it "succeeds for an extant work ID" do
-      get work_path(existing_work.id)
+    
+      perform_login
+
+      get work_path(Work.first)
 
       must_respond_with :success
     end
 
     it "renders 404 not_found for a bogus work ID" do
-      destroyed_id = existing_work.id
-      existing_work.destroy
+      work = Work.first
+      destroyed_id = work.id
+      work.destroy
 
       get work_path(destroyed_id)
 
@@ -120,10 +142,11 @@ describe WorksController do
     end
 
     it "renders 404 not_found for a bogus work ID" do
-      bogus_id = existing_work.id
+      invalid_id = existing_work.id
+
       existing_work.destroy
 
-      get edit_work_path(bogus_id)
+      get edit_work_path(invalid_id)
 
       must_respond_with :not_found
     end
@@ -189,19 +212,40 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
+      post upvote_path(existing_work.id)
+      
+      must_redirect_to work_path(existing_work.id)
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+      perform_login
+
+      post logout_path, params: {}
+      
+      post upvote_path(existing_work.id)
+      
+      must_redirect_to work_path(existing_work.id)
+      
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      new_user = User.new(uid: "1122", username: "Stephanie", email: "stephanie@stephanie.org")
+      perform_login(new_user)
+
+      post upvote_path(existing_work)
+
+      assert_equal "Successfully upvoted!", flash[:result_text]
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      perform_login
+
+      post upvote_path(existing_work)
+
+      post upvote_path(existing_work)
+
+      assert_equal 'Could not upvote', flash[:result_text]
+      must_redirect_to work_path(existing_work.id)
     end
   end
 end
