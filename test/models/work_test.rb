@@ -103,15 +103,18 @@ describe Work do
       # TODO DPR: This runs pretty slow. Fixtures?
       # Create users to do the voting
       test_users = []
+      uids =(1000..9000).to_a
       20.times do |i|
+        sample = uids.sample
         test_users << User.create!(
           username: "user#{i}",
           provider: "github",
-          uid: (1000..9000).to_a.sample,
+          uid: sample,
           email: "user#{i}@amail.org",
           username: "countess_user#{i}",
           name: "user#{i}"
         )
+        uids.delete(sample)
       end
 
       # Create media to vote upon

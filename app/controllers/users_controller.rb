@@ -31,7 +31,7 @@ class UsersController < ApplicationController
         flash[:failure] = "Could not log in"
         flash[:result_text] = "Could not log in"
         flash[:messages] = user.errors.messages
-        redirect_to root_path
+        redirect_to github_login_path
         return
       end
     end
