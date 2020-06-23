@@ -108,6 +108,10 @@ class WorksController < ApplicationController
   def logged_in
     user_id = session[:user_id]
 
-    user_id.nil? ? return false : return user_id
+    if user_id.nil?
+      return false
+    else
+      return user_id
+    end
   end
 end
