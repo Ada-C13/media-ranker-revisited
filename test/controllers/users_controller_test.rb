@@ -6,7 +6,7 @@ describe UsersController do
     it "logs in an existing user and redirects to the root route" do
       user = users(:grace)
 
-      expect{perform_login(user)}.must_differ 'User.count', 0
+      expect{perform_login(user)}.wont_change 'User.count'
 
       must_redirect_to root_path
       user_id = session[:user_id]
@@ -27,7 +27,7 @@ describe UsersController do
     it "redirects to the login route if given invalid user data" do
       user = User.new(provider: "github")
 
-      expect{perform_login(user)}.must_differ 'User.count', 0
+      expect{perform_login(user)}.wont_change 'User.count'
 
       must_redirect_to github_login_path
       user_id = session[:user_id]
