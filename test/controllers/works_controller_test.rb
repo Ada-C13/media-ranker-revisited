@@ -37,7 +37,7 @@ describe WorksController do
         
         must_redirect_to root_path
         expect(flash[:status]).must_equal :failure
-        expect(flash[:result_text]).must_equal "You must log in to view this page"
+        expect(flash[:result_text]).must_equal "You must be logged in to view this page"
       end
     end
     

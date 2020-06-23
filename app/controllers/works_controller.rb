@@ -11,7 +11,7 @@ class WorksController < ApplicationController
   end
 
   def index
-    if authorized_user
+    if @login_user
       @works_by_category = Work.to_category_hash
     else
       flash[:status] = :failure
