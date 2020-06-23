@@ -8,6 +8,14 @@ class ApplicationController < ActionController::Base
     raise ActionController::RoutingError.new("Not Found")
   end
 
+  def require_login
+    if @login_user.nil?
+      flash[:status] = :warning
+      flash[:result_text] = "Must be logged in to access that feature"
+      redirect_to root_path
+    end
+  end
+
   private
 
   def find_user

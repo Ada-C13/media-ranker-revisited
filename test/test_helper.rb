@@ -47,14 +47,7 @@ class ActiveSupport::TestCase
     user ||= User.first
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
 
-    get auth_callback_path(:github)
-
-    # retrieve user
-    user = User.find_by(uid: user.uid, username: user.username)
-    expect(user).wont_be_nil 
-
-    # verify the user ID saved
-    expect(session[:user_id]).must_equal user.id
+    get login_path(:github)
   
     return user
   end
