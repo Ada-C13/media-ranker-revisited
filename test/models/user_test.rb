@@ -26,17 +26,26 @@ describe User do
       expect(user.errors.messages).must_include :username
     end
 
-    it "requires a unique username" do
+    it "requires a unique username, uid, email" do
       username = "test username"
-      user1 = User.new(username: username)
+      user1 = users(:grace)
 
       # This must go through, so we use create!
       user1.save!
 
-      user2 = User.new(username: username)
-      result = user2.save
-      expect(result).must_equal false
+      user2 = User.new(
+        provider: "github",
+        uid: 13371337,
+        email: "grace@hooper.net",
+        username: "graceful_hopps",
+        name: "grace"
+      )
+  
+      expect(user2.save).must_equal false
       expect(user2.errors.messages).must_include :username
+      expect(user2.errors.messages).must_include :uid
+      expect(user2.errors.messages).must_include :email
     end
+
   end
 end
