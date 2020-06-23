@@ -20,18 +20,18 @@ class UsersController < ApplicationController
       redirect_to root_path
       return
     else
-      @user = User.build_from_github(auth_hash)
-      if @user.save
-        session[:username] = @user.username
-        flash[:status] = :success
-        flash[:result_text] = "Successfully created new user #{@user.username} with ID #{user.uid}"
+      user = User.build_from_github(auth_hash)
+      if user.save
+        session[:username] = user.username
+        session[:user_id] = user.uid
+        flash[:success] = "Successfully created new user #{user.username} with ID #{user.uid}"
         redirect_to root_path
         return
       else
-        flash[:status] = :failure
+        flash[:failure] = "Could not log in"
         flash[:result_text] = "Could not log in"
-        flash[:messages] = @user.errors.messages
-        redirect_to root_path
+        flash[:messages] = user.errors.messages
+        redirect_to github_login_path
         return
       end
     end

@@ -83,7 +83,14 @@ describe Work do
     it "tracks the number of votes" do
       work = Work.create!(title: "test title", category: "movie")
       4.times do |i|
-        user = User.create!(username: "user#{i}")
+        user = User.create!(
+          username: "user#{i}",
+          provider: "github",
+          uid: (1000..9000).to_a.sample,
+          email: "user#{i}@amail.org",
+          username: "countess_user#{i}",
+          name: "user#{i}"
+        )
         Vote.create!(user: user, work: work)
       end
       expect(work.vote_count).must_equal 4
@@ -96,8 +103,18 @@ describe Work do
       # TODO DPR: This runs pretty slow. Fixtures?
       # Create users to do the voting
       test_users = []
+      uids =(1000..9000).to_a
       20.times do |i|
-        test_users << User.create!(username: "user#{i}")
+        sample = uids.sample
+        test_users << User.create!(
+          username: "user#{i}",
+          provider: "github",
+          uid: sample,
+          email: "user#{i}@amail.org",
+          username: "countess_user#{i}",
+          name: "user#{i}"
+        )
+        uids.delete(sample)
       end
 
       # Create media to vote upon
