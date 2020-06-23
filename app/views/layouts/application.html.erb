@@ -37,7 +37,6 @@
             <ul class="nav app-header__user-nav-container">
                 <% if session[:uid] %>
                 <li class="nav-item app-header__nav_item"><%= link_to "Log out", logout_path, method: :delete, class: "btn btn-primary"%></li>
-                <li class="nav-item app-header__nav_item btn btn-primary">Logged in as <%=  User.find_by(uid: session[:uid]).username %></li>
                 <% else %>
                 <li class="nav-item app-header__nav_item"><%= link_to "Login with Github", github_login_path, method: :get, class: "btn btn-primary" %></li>
                 <% end %>
