@@ -82,7 +82,7 @@ class WorksController < ApplicationController
         flash[:status] = :success
         flash[:result_text] = "Successfully upvoted!"
       else
-        flash[:result_text] = "Could not upvote"
+        flash[:result_text] = "You must log in to do that"
         flash[:messages] = vote.errors.messages
       end
     else

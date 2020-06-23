@@ -73,7 +73,7 @@ describe "authenticated" do
       perform_login(users(:dan))
       get works_path
 
-      must_respond_with :found
+      must_respond_with :success
     end
 
     it "succeeds when there are no works" do
@@ -85,7 +85,7 @@ describe "authenticated" do
 
       get works_path
 
-      must_respond_with :found
+      must_respond_with :success
     end
   end
   describe "show" do
@@ -93,7 +93,7 @@ describe "authenticated" do
       perform_login(users(:dan))
       get work_path(existing_work.id)
 
-      must_respond_with :found
+      must_respond_with :success
     end
 
     it "renders 404 not_found for a bad work ID" do
@@ -251,7 +251,7 @@ end
       movie = works(:movie)
 
       post upvote_path(movie)
-      must_respond_with :found
+      must_respond_with :redirect
       must_redirect_to work_path(movie)
       flash[:result_text].wont_be_nil
       flash[:status].wont_be_nil
@@ -262,7 +262,7 @@ end
       movie = works(:movie)
 
       post upvote_path(movie)
-      must_respond_with :found
+      must_respond_with :redirect
       must_redirect_to work_path(movie)
       flash[:result_text].wont_be_nil
       flash[:status].wont_be_nil
