@@ -36,7 +36,12 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'bootstrap', '~> 4.1.3'
 
+# Add in oAuth gems here: 
+gem "omniauth"
+gem "omniauth-github"
+
 group :development, :test do
+  gem 'dotenv-rails'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
 
@@ -56,6 +61,7 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
+  gem 'dotenv-rails'
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '~> 3.0.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
@@ -65,3 +71,6 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+gem "omniauth"
+gem "omniauth-github"
