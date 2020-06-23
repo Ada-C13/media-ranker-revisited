@@ -28,12 +28,12 @@ describe User do
 
     it "requires a unique username" do
       username = "test username"
-      user1 = User.new(username: username)
+      user1 = User.new(username: username, uid: "123")
 
       # This must go through, so we use create!
       user1.save!
 
-      user2 = User.new(username: username)
+      user2 = User.new(username: username, uid: "456")
       result = user2.save
       expect(result).must_equal false
       expect(user2.errors.messages).must_include :username

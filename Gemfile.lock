@@ -260,7 +260,6 @@ DEPENDENCIES
   pry-rails
   puma (~> 3.0)
   rails (~> 6.0)
-  rake
   sass-rails
   spring
   spring-watcher-listen (~> 2.0.0)
