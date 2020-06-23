@@ -11,7 +11,14 @@ class WorksController < ApplicationController
   end
 
   def index
-    @works_by_category = Work.to_category_hash
+    if @login_user
+      @works_by_category = Work.to_category_hash
+    else
+      flash[:status] = :failure
+      flash[:result_text] = "You must be logged in to view this page"
+      redirect_to root_path
+      return
+    end
   end
 
   def new
@@ -34,7 +41,13 @@ class WorksController < ApplicationController
   end
 
   def show
-    @votes = @work.votes.order(created_at: :desc)
+    if logged_in
+      @votes = @work.votes.order(created_at: :desc)
+    else
+      flash[:status] = :failure
+      flash[:result_text] = "You must log in to view this page"
+      redirect_to root_path
+    end
   end
 
   def edit
@@ -90,5 +103,15 @@ class WorksController < ApplicationController
     @work = Work.find_by(id: params[:id])
     render_404 unless @work
     @media_category = @work.category.downcase.pluralize
+  end
+
+  def logged_in
+    user_id = session[:user_id]
+
+    if user_id.nil?
+      return false
+    else
+      return user_id
+    end
   end
 end

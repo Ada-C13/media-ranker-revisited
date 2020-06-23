@@ -3,15 +3,11 @@ class Work < ApplicationRecord
   has_many :votes, dependent: :destroy
   has_many :ranking_users, through: :votes, source: :user
 
-  validates :category, presence: true,
-                       inclusion: {in: CATEGORIES}
+  validates :category, presence: true, inclusion: {in: CATEGORIES}
 
-  validates :title, presence: true,
-                    uniqueness: {scope: :category}
+  validates :title, presence: true, uniqueness: {scope: :category}
 
-  # This is called a model filter, and is very similar to a controller filter.
-  # We want to fixup the category *before* we validate, because
-  # our validations are rather strict about what's OK.
+
   before_validation :fix_category
 
   def self.to_category_hash
