@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  skip_before_action :require_login, only:[:create]
+  skip_before_action :require_login, only:[:create, :destroy]
   before_action :find_user, except: [:index, :create]
 
   def index

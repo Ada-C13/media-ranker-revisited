@@ -41,7 +41,7 @@ describe UsersController do
       perform_login(user)
 
       expect(session[:user_id]).must_equal user.uid
-      perform_logout
+      post logout_path
       expect(session[:user_id]).must_be_nil
 
     end
