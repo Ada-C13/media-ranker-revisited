@@ -11,7 +11,13 @@ class WorksController < ApplicationController
   end
 
   def index
-    @works_by_category = Work.to_category_hash
+    if @login_user 
+      @works_by_category = Work.to_category_hash
+    else  
+      flash[:status] = :failure
+      flash[:result_text] = "You must be logged in to view works index"
+      redirect_to root_path
+    end
   end
 
   def new
@@ -34,14 +40,22 @@ class WorksController < ApplicationController
   end
 
   def show
-    @votes = @work.votes.order(created_at: :desc)
+    if @login_user
+      @votes = @work.votes.order(created_at: :desc)
+    else
+      flash[:status] = :failure
+      flash[:result_text] = "You must be logged in to view the #{@work.title} show page"
+    
+      redirect_to root_path
+    end
   end
 
   def edit
   end
 
   def update
-    if @work.update(media_params)
+    @work.update_attributes(media_params)
+    if @work.save
       flash[:status] = :success
       flash[:result_text] = "Successfully updated #{@media_category.singularize} #{@work.id}"
       redirect_to work_path(@work)
@@ -68,7 +82,7 @@ class WorksController < ApplicationController
         flash[:status] = :success
         flash[:result_text] = "Successfully upvoted!"
       else
-        flash[:result_text] = "Could not upvote"
+        flash[:result_text] = "You must log in to do that"
         flash[:messages] = vote.errors.messages
       end
     else
